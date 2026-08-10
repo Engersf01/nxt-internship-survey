@@ -225,6 +225,7 @@ const ICONS = {
   send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
   chart:'<line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>',
   arrowup:'<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+  wifi:'<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
   angry:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><path d="M7.5 8 10 9"/><path d="m14 9 2.5-1"/><path d="M9 10h.01"/><path d="M15 10h.01"/>',
   frown:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
   meh:'<circle cx="12" cy="12" r="10"/><line x1="8" x2="16" y1="15" y2="15"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
@@ -310,6 +311,10 @@ const RATINGS_OVERALL = [
   ['tools','Tools & resources','Did you have what you needed to do great work?'],
   ['communication','Communication','Clarity from leads, expectations, changes'],
   ['balance','Workload & balance','Sustainable pace vs. burnout territory']
+];
+const RATINGS_REMOTE = [
+  ['async','The async rhythm','Working on your own schedule — tasks, updates, and feedback without everything being a live meeting. Did it flow this month?'],
+  ['virtual','Fully virtual connection','No office, everything online. Did you still feel connected, supported, and productive?']
 ];
 const SKILLS = ['Communication','Technical / coding','Design & creativity','Problem-solving','Confidence','Working with a team'];
 const SKILL_CHIPS = ['AI & prompt engineering','Web / app development','Data analysis','UX / UI design','Video & media','Teaching & facilitation','Project management','Research','Community outreach','Sales & pitching','Healthcare workflows','No-code tools','Public speaking','Entrepreneurship'];
@@ -488,10 +493,20 @@ screens.push(()=>{
       <h3>${I('thermometer',18)} The month overall</h3>
       <div id="pAll"></div>
     </div>
+    <div class="card">
+      <h3>${I('wifi',18)} Remote &amp; async life</h3>
+      <p class="sub" style="margin-bottom:4px">nxT runs fully virtual and mostly asynchronous — no office, and lots of work on your own schedule. How is that treating you?</p>
+      <div id="pRemote"></div>
+      <div id="remoteExtra"></div>
+    </div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
   </section>`);
   s.querySelector('#p1').appendChild(ratingBlock(phaseItems(m)));
   s.querySelector('#pAll').appendChild(ratingBlock(RATINGS_OVERALL));
+  s.querySelector('#pRemote').appendChild(ratingBlock(RATINGS_REMOTE));
+  const rx = s.querySelector('#remoteExtra');
+  rx.appendChild(q('What\'s the hardest part of virtual + async for you?','Tap all that apply — honesty is how it gets fixed.', chipGroup('remoteHard',['Staying motivated on my own','Feeling connected to the team','Getting quick answers when stuck','Time zones & scheduling','Knowing what\'s expected of me','Tech & tools setup','Separating work from life','Nothing — it works great for me'], true, 20)));
+  rx.appendChild(q('One thing that would make virtual / async work better','A ritual, a tool, a habit — what would you change?', textInput('remoteImprove','e.g. A weekly 30-min live sync so questions don\'t wait a whole day')));
   return s;
 });
 
@@ -751,6 +766,7 @@ async function submit(){
     moment:S.moment||null, continueInterest:S.continue||null, nps:S.nps??null,
     keep:S.keep||null, fix:S.fix||null, advice:S.advice||null,
     wantMore:S.wantMore||[], nextGoal:S.nextGoal||null, transitionNotes:S.transitionNotes||null,
+    remoteHard:S.remoteHard||[], remoteImprove:S.remoteImprove||null,
     testimonial:S.testimonial||null, testimonialOk:!!S.testimonialOk,
     xp, badges:[...badges], archetype:pickArchetype()[1]
   };
