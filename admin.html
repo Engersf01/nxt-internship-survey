@@ -89,6 +89,11 @@ tr.rrow:hover td{background:#f8fafc}
 .login-card .btn-primary{width:100%;justify-content:center;margin-top:18px;padding:12px;font-size:.9rem;border-radius:10px}
 .login-err{display:none;color:var(--red);font-size:.82rem;margin-top:10px;text-align:center}
 .hidden{display:none!important}
+/* view toggle */
+.segs{display:inline-flex;background:#eef2f7;border-radius:12px;padding:4px;margin:16px 0 0;gap:2px}
+.seg{border:none;background:transparent;color:var(--muted);font-family:'Inter';font-weight:600;font-size:.85rem;
+  padding:8px 16px;border-radius:9px;cursor:pointer;transition:all .15s}
+.seg.on{background:#fff;color:var(--txt);box-shadow:0 1px 3px rgba(15,23,42,.12)}
 #toastA{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(150%);background:#0f172a;color:#fff;border-radius:12px;padding:10px 18px;font-size:.85rem;transition:transform .35s;z-index:50}
 #toastA.show{transform:translateX(-50%) translateY(0)}
 </style>
@@ -121,6 +126,12 @@ tr.rrow:hover td{background:#f8fafc}
   </div></div>
 
   <div class="wrap">
+    <div class="segs">
+      <button class="seg on" data-v="intern">Intern debriefs</button>
+      <button class="seg" data-v="leader">Leader evaluations</button>
+    </div>
+
+    <div id="view-intern">
     <div class="tiles" id="tiles"></div>
 
     <div class="chart-grid">
@@ -159,6 +170,44 @@ tr.rrow:hover td{background:#f8fafc}
       </table></div>
       <div class="empty hidden" id="rempty">No responses yet — hand out access codes and they'll appear here.</div>
     </div>
+    </div><!-- /view-intern -->
+
+    <div id="view-leader" class="hidden">
+      <div class="tiles" id="tilesL"></div>
+      <div class="chart-grid">
+        <div class="card">
+          <h2>Evaluations by month</h2>
+          <div id="byMonthL"></div>
+        </div>
+        <div class="card">
+          <h2>Mentor NPS — recommend mentoring here</h2>
+          <div id="npsChartL"></div>
+          <div class="zone-legend"><span>0–6 detractors</span><span>7–8 passives</span><span>9–10 promoters</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Intern performance averages <span class="sub" style="font-weight:400">(1 = rough · 5 = exceptional, as rated by leaders)</span></h2>
+        <div id="ratingsL"></div>
+      </div>
+      <div class="chart-grid">
+        <div class="card">
+          <h2>Program experience — mentor side</h2>
+          <div id="programL"></div>
+        </div>
+        <div class="card">
+          <h2>Growth focus areas for interns</h2>
+          <div id="growthL"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Evaluations <span class="sub" id="lcount" style="font-weight:400"></span></h2>
+        <div style="overflow-x:auto"><table id="ltable">
+          <thead><tr><th>Date</th><th>Month</th><th>Leader</th><th>Intern</th><th>The call</th><th>NPS</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <div class="empty hidden" id="lempty">No leader evaluations yet — share the /leader link with your leads.</div>
+      </div>
+    </div><!-- /view-leader -->
 
     <div class="card">
       <h2>Access codes <span class="sub" id="ccount" style="font-weight:400"></span></h2>
@@ -184,7 +233,21 @@ const RATING_LABELS = {
   balance:'Workload & balance', async:'Async rhythm', virtual:'Virtual connection'
 };
 
+const LEADER_RATING_LABELS = {
+  landing:'Landing & integration', coachability:'Coachability', growthRate:'Skill growth',
+  collaboration:'Collaboration', ownership:'Ownership', readiness:'Ready for paid phase',
+  stakes:'Handling real stakes', accountability:'Accountability', independence:'Independence',
+  leadership:'Leadership potential', overall:'Overall performance', hireability:'Would hire long-term',
+  reliability:'Reliability & follow-through', communication:'Communication & updates',
+  quality:'Quality of work', initiative:'Initiative'
+};
+const PROGRAM_LABELS = {
+  mentorTime:'Time to mentor well', programClarity:'Program structure & clarity',
+  nxtSupport:'Support from nxT leadership', asyncLeader:'Async with intern', virtualLeader:'Virtual connection'
+};
+
 let token = sessionStorage.getItem('nxt-admin-token') || '';
+let VIEW = 'intern';
 
 function toastA(msg){
   const t = $('#toastA'); t.textContent = msg; t.classList.add('show');
@@ -247,15 +310,24 @@ function hBars(el, items, max, fmt){ // items: [{label, value, n}]
 }
 
 /* ---------- data load ---------- */
-let RESPONSES = [];
+let RESPONSES = [], LEADERS = [];
 async function load(){
   try{
     const j = await api('/api/responses');
-    RESPONSES = j.responses || [];
+    const all = j.responses || [];
+    RESPONSES = all.filter(r=>(r.formType||'intern')!=='leader');
+    LEADERS = all.filter(r=>r.formType==='leader');
     render();
+    renderLeader();
     await loadCodes();
   }catch(ex){ toastA(ex.message); }
 }
+document.querySelectorAll('.seg').forEach(b=>b.onclick=()=>{
+  VIEW = b.dataset.v;
+  document.querySelectorAll('.seg').forEach(x=>x.classList.toggle('on', x===b));
+  $('#view-intern').classList.toggle('hidden', VIEW!=='intern');
+  $('#view-leader').classList.toggle('hidden', VIEW!=='leader');
+});
 async function loadCodes(){
   try{
     const j = await api('/api/codes?action=list');
@@ -362,10 +434,90 @@ function detailHtml(r){
   return `<dl>${dd.join('')}</dl>`;
 }
 
-/* CSV link carries the token as a query param */
+/* ---------- leader view ---------- */
+function renderLeader(){
+  const ls = LEADERS;
+  const npsVals = ls.filter(r=>r.nps!=null).map(r=>Number(r.nps));
+  const allRatings = ls.flatMap(r=>Object.values(r.ratings||{}).map(Number));
+  const avgRating = allRatings.length ? (allRatings.reduce((a,b)=>a+b,0)/allRatings.length) : null;
+  const paidGreen = ls.filter(r=>/^(Absolutely|Ready)/.test(r.paidRecommendation||'')).length;
+  const hires = ls.filter(r=>/^Hire/.test(r.finalRecommendation||'')).length;
+
+  $('#tilesL').innerHTML = `
+    <div class="tile"><div class="t-label">Total evaluations</div><div class="t-value">${ls.length}</div><div class="t-note">${new Set(ls.map(r=>r.internName).filter(Boolean)).size} interns · ${new Set(ls.map(r=>r.leaderName).filter(Boolean)).size} leaders</div></div>
+    <div class="tile"><div class="t-label">Avg intern rating</div><div class="t-value">${avgRating==null?'—':avgRating.toFixed(1)}</div><div class="t-note">across all dimensions</div></div>
+    <div class="tile"><div class="t-label">Paid-phase green lights</div><div class="t-value">${paidGreen}</div><div class="t-note">month-3 "ready" calls</div></div>
+    <div class="tile"><div class="t-label">Hire recommendations</div><div class="t-value">${hires}</div><div class="t-note">month-6 full/part-time calls</div></div>`;
+
+  vBars($('#byMonthL'), [1,2,3,4,5,6].map(m=>({label:'M'+m, value:ls.filter(r=>r.month===m).length})),
+    i=>i.value+' evaluation'+(i.value===1?'':'s')+' for month '+i.label.slice(1));
+  vBars($('#npsChartL'), Array.from({length:11},(_,i)=>({label:String(i), value:npsVals.filter(v=>v===i).length})),
+    i=>i.value+' answered '+i.label);
+
+  const agg = (key, labels)=>{
+    const a={};
+    ls.forEach(r=>Object.entries(r[key]||{}).forEach(([k,v])=>{(a[k]=a[k]||[]).push(Number(v));}));
+    return Object.entries(a).map(([k,vals])=>({label:labels[k]||k, value:vals.reduce((x,y)=>x+y,0)/vals.length, n:vals.length})).sort((a,b)=>a.value-b.value);
+  };
+  hBars($('#ratingsL'), agg('ratings', LEADER_RATING_LABELS), 5, v=>v.toFixed(1));
+  hBars($('#programL'), agg('programRatings', PROGRAM_LABELS), 5, v=>v.toFixed(1));
+
+  const gf={};
+  ls.forEach(r=>(r.growthFocus||[]).forEach(x=>gf[x]=(gf[x]||0)+1));
+  const growth = Object.entries(gf).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value).slice(0,8);
+  hBars($('#growthL'), growth, Math.max(1,...growth.map(g=>g.value),1), v=>String(v));
+
+  const tb = $('#ltable tbody');
+  $('#lcount').textContent = '— '+ls.length;
+  $('#lempty').classList.toggle('hidden', ls.length>0);
+  const sorted = ls.slice().sort((a,b)=>(b.submittedAt||'').localeCompare(a.submittedAt||''));
+  tb.innerHTML = sorted.map((r,i)=>{
+    const d = r.submittedAt ? new Date(r.submittedAt).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}) : '—';
+    const call = r.paidRecommendation || r.finalRecommendation || r.nextFocus || '—';
+    return `<tr class="rrow" data-i="${i}">
+      <td>${d}</td>
+      <td>${r.month?`<span class="pill${r.month>3?' paid':''}">M${r.month} · ${r.month<=3?'learning':'paid'}</span>`:'—'}</td>
+      <td>${esc(r.leaderName)||'<span class="sub">—</span>'}</td>
+      <td>${esc(r.internName)||'—'}</td>
+      <td>${esc(call)}</td>
+      <td>${r.nps??'—'}</td>
+    </tr>
+    <tr class="detail" id="det-l-${i}"><td colspan="6">${leaderDetailHtml(r)}</td></tr>`;
+  }).join('');
+  tb.querySelectorAll('tr.rrow').forEach(row=>{
+    row.onclick = ()=>document.getElementById('det-l-'+row.dataset.i).classList.toggle('open');
+  });
+}
+function leaderDetailHtml(r){
+  const dd = [];
+  const add=(k,v)=>{ if(v!=null && v!=='' && !(Array.isArray(v)&&!v.length)) dd.push(`<dt>${k}</dt><dd>${v}</dd>`); };
+  add('Leader', esc(r.leaderName));
+  add('Area', esc(r.area));
+  add('Mentor hat', esc(r.hat));
+  add('Intern worked in', (r.areas||[]).map(esc).join(', '));
+  add('Intern mission', esc(r.mission));
+  add('Biggest step forward', esc(r.stepForward));
+  add('Intern ratings', Object.entries(r.ratings||{}).map(([k,v])=>`${LEADER_RATING_LABELS[k]||k}: ${v}/5`).join(' · '));
+  add('Program ratings', Object.entries(r.programRatings||{}).map(([k,v])=>`${PROGRAM_LABELS[k]||k}: ${v}/5`).join(' · '));
+  add('Standout contribution', esc(r.standout));
+  add('Impressed by', esc(r.impressed));
+  add('Skills grown', (r.skillsGrown||[]).map(esc).join(', '));
+  add('Growth focus', (r.growthFocus||[]).map(esc).join(', '));
+  add('Coaching note', esc(r.growthNotes));
+  add('Paid-phase call', esc(r.paidRecommendation));
+  add('Final recommendation', esc(r.finalRecommendation));
+  add('Mentor again?', esc(r.anotherIntern));
+  add('Next-month focus', esc(r.nextFocus));
+  add('Support needed', esc(r.supportNeeded));
+  add('Program: keep', esc(r.keep));
+  add('Program: fix', esc(r.fix));
+  return `<dl>${dd.join('')}</dl>`;
+}
+
+/* CSV link carries the token + current view as query params */
 $('#csv').onclick = (e)=>{
   e.preventDefault();
-  window.open('/api/responses?format=csv&token='+encodeURIComponent(token), '_blank');
+  window.open('/api/responses?format=csv&type='+VIEW+'&token='+encodeURIComponent(token), '_blank');
 };
 
 /* boot */

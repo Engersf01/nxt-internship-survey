@@ -23,6 +23,24 @@ and the questions adapt to where they are in the journey:
 Each submission is stamped with `month` and `phase` (learning/paid), so you can
 track how ratings evolve across the cohort month over month.
 
+## Mentor debrief (`/leader`)
+
+Leaders get the mirror experience at **/leader** — same gamification, same
+access codes, evaluating the intern and the program from the mentor's seat:
+
+- Month-aware intern evaluation (landing/coachability at m1 … paid-phase
+  readiness call at m3, real-stakes handling at m4, hire recommendation at m6)
+  plus core fundamentals every month
+- Evidence: standout contribution, impressive moment, skills grown, growth
+  focus areas, a coaching note
+- Program experience from the mentor side (time to mentor, clarity, nxT
+  support, async/virtual with the intern) + keep/fix + mentor NPS
+- Mentor archetype from the "which hat did you wear" question
+
+Submissions carry `formType: "leader"`; the admin dashboard has an
+Intern debriefs / Leader evaluations toggle, and the CSV export accepts
+`&type=leader`.
+
 Gamification: XP per answer, 6 levels (Explorer → nxT Legend), 6 badges, an
 "intern archetype" computed from their answers, confetti, autosave/resume via
 localStorage, fully mobile-friendly.

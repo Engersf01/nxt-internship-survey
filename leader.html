@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentor Debrief · nxT Innovation Lab</title>
+<meta name="description" content="Monthly mentor debrief for nxT Innovation Lab leaders — evaluate your intern, rate the program, and unlock your mentor archetype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--card:#ffffff;--card-br:#e2e8f0;
+  --txt:#0f172a;--muted:#64748b;--accent:#7c3aed;--accent-soft:#f3e8ff;--accent2:#0284c7;--accent2-soft:#e0f2fe;
+  --green:#059669;--pink:#db2777;
+  --grad:linear-gradient(90deg,#8b5cf6,#0ea5e9,#10b981);
+  --radius:18px;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);
+  min-height:100vh;line-height:1.55;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(139,92,246,.08),transparent),
+                   radial-gradient(700px 500px at -10% 30%,rgba(14,165,233,.06),transparent),
+                   radial-gradient(800px 600px at 50% 110%,rgba(16,185,129,.05),transparent);
+  background-attachment:fixed;
+}
+h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:20px 18px 90px}
+.ic{vertical-align:-0.22em;flex-shrink:0}
+.hud{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--card-br);padding:10px 18px}
+.hud-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{font-weight:700;font-size:.95rem;letter-spacing:.02em;white-space:nowrap}
+.brand span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{flex:1;height:10px;border-radius:99px;background:#eef2f7;overflow:hidden}
+.bar i{display:block;height:100%;width:0%;background:var(--grad);border-radius:99px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+.xp{font-family:'Space Grotesk';font-weight:700;font-size:.85rem;color:var(--green);white-space:nowrap;min-width:74px;text-align:right}
+.lvl{font-size:.7rem;color:var(--muted);display:block;text-align:right;margin-top:-2px}
+.screen{display:none;animation:pop .45s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--card-br);border-radius:var(--radius);padding:22px;margin:16px 0;box-shadow:var(--shadow)}
+.chapter-tag{display:inline-flex;align-items:center;gap:7px;font-family:'Space Grotesk';font-size:.75rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);
+  border:1px solid #ddd6fe;padding:5px 12px;border-radius:99px;margin-bottom:12px}
+h1{font-size:2rem;line-height:1.15;margin-bottom:10px}
+h2{font-size:1.45rem;line-height:1.2;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+h2 .ic{color:var(--accent)}
+h3{font-size:1.02rem;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+h3 .ic{color:var(--accent2)}
+.sub{color:var(--muted);font-size:.95rem}
+.q{margin:22px 0}
+.q-label{font-weight:600;margin-bottom:4px;display:block}
+.q-hint{font-size:.82rem;color:var(--muted);margin-bottom:10px;display:block}
+.optional{font-size:.7rem;color:var(--muted);font-weight:500;border:1px solid var(--card-br);border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+input[type=text],input[type=email],input[type=url],input[type=month],textarea,select{
+  width:100%;background:#f8fafc;border:1px solid #cbd5e1;color:var(--txt);
+  border-radius:12px;padding:12px 14px;font-size:.95rem;font-family:inherit;outline:none;transition:border .2s,box-shadow .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.12);background:#fff}
+textarea{min-height:88px;resize:vertical}
+::placeholder{color:#94a3b8}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid #cbd5e1;background:#fff;color:var(--txt);
+  border-radius:99px;padding:8px 14px;font-size:.87rem;cursor:pointer;transition:all .15s;font-family:inherit;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:#5b21b6;font-weight:600}
+.emoji-row{display:flex;gap:6px;justify-content:space-between}
+.emoji-btn{flex:1;background:#fff;border:1px solid #cbd5e1;border-radius:14px;
+  padding:10px 0 6px;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.emoji-btn .e{display:block;color:#94a3b8;transition:all .15s;line-height:1}
+.emoji-btn small{font-size:.62rem;color:var(--muted)}
+.emoji-btn:hover .e{color:var(--face);transform:scale(1.12)}
+.emoji-btn.on{background:var(--accent2-soft);border-color:var(--accent2)}
+.emoji-btn.on .e{color:var(--face);transform:scale(1.15)}
+.rate-row{padding:14px 0;border-bottom:1px solid #eef2f7}
+.rate-row:last-child{border-bottom:none}
+.rate-row .rlabel{font-weight:600;font-size:.93rem;margin-bottom:2px}
+.rate-row .rdesc{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.nps{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
+.nps button{aspect-ratio:1;border-radius:10px;border:1px solid #cbd5e1;background:#fff;
+  color:var(--txt);font-family:'Space Grotesk';font-weight:700;font-size:.9rem;cursor:pointer;transition:all .15s}
+.nps button:hover{border-color:var(--accent)}
+.nps button.on{background:var(--grad);color:#fff;border-color:transparent;transform:scale(1.12)}
+.nps-legend{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:6px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.levels button{background:#fff;border:1px solid #cbd5e1;border-radius:14px;padding:10px 6px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center}
+.levels button b{display:block;font-family:'Space Grotesk';font-size:.9rem;color:var(--txt)}
+.levels button small{font-size:.66rem;color:var(--muted)}
+.levels button:hover{border-color:var(--accent);transform:translateY(-2px)}
+.levels button.on{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
+.levels button.on b{color:#5b21b6}
+@media(max-width:420px){.levels{grid-template-columns:repeat(2,1fr)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:14px;
+  padding:14px 26px;font-family:'Space Grotesk';font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
+.btn-ghost{background:#fff;color:var(--muted);border:1px solid var(--card-br)}
+.btn-ghost:hover{color:var(--txt);border-color:#94a3b8}
+.nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);z-index:99;
+  background:#fff;border:1px solid var(--card-br);border-radius:16px;padding:12px 20px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(15,23,42,.18);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast .t-icon{color:var(--accent);display:flex}
+#toast b{display:block;font-family:'Space Grotesk';font-size:.9rem}
+#toast small{color:var(--muted);font-size:.78rem}
+.hero{text-align:center;padding:34px 10px 10px}
+.hero .big-emoji{font-size:3.6rem;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+.hero .big-icon{display:inline-flex;color:var(--accent);margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.pill-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.pill{font-size:.78rem;border:1px solid var(--card-br);border-radius:99px;padding:5px 12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;background:#fff}
+.pill .ic{color:var(--accent)}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px;margin:18px 0}
+.badge{background:#f8fafc;border:1px solid var(--card-br);border-radius:14px;padding:14px 6px;text-align:center}
+.badge .be{display:flex;justify-content:center;color:#cbd5e1}
+.badge.won{background:#fff;border-color:#bae6fd}
+.badge.won .be{color:var(--accent2)}
+.badge small{font-size:.64rem;color:var(--muted);display:block;margin-top:6px}
+.badge.won small{color:var(--txt);font-weight:600}
+.archetype{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(14,165,233,.07),rgba(16,185,129,.06));
+  border:1px solid #ddd6fe;border-radius:20px;padding:26px;text-align:center;margin:18px 0}
+.archetype .a-icon{display:flex;justify-content:center;color:var(--accent);margin-bottom:10px}
+.archetype h3{font-size:1.4rem;justify-content:center;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:98}
+.error-note{background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:14px;display:none;color:#9d174d}
+.error-note a{color:var(--accent2)}
+@media(max-width:520px){
+  h1{font-size:1.6rem}
+  .nps button{font-size:.75rem;border-radius:8px}
+  .card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="hud-inner">
+    <div class="brand">nxT <span>Mentor Debrief</span></div>
+    <div class="bar"><i id="bar-fill"></i></div>
+    <div>
+      <div class="xp" id="xp">0 XP</div>
+      <span class="lvl" id="lvl">Scout</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<div id="toast"><span class="t-icon" id="toast-icon"></span><div><b id="toast-title"></b><small id="toast-sub"></small></div></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* ================= ICONS ================= */
+const ICONS = {
+  rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  sprout:'<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-3.7.3-4.9 1.4-4.9 2z"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  map:'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+  swords:'<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 10"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/>',
+  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  sparkles:'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+  trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  thermometer:'<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
+  medal:'<path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/><path d="M12 18v-2h-.5"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  key:'<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  eye:'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+  trendup:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  clapper:'<path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+  compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.97 21.02 12 17.77 5.03 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  eyeoff:'<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>',
+  wifi:'<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
+  angry:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><path d="M7.5 8 10 9"/><path d="m14 9 2.5-1"/><path d="M9 10h.01"/><path d="M15 10h.01"/>',
+  frown:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
+  meh:'<circle cx="12" cy="12" r="10"/><line x1="8" x2="16" y1="15" y2="15"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
+  laugh:'<circle cx="12" cy="12" r="10"/><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>'
+};
+function I(name, size=20){
+  return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||''}</svg>`;
+}
+
+/* ================= STATE ================= */
+const S = JSON.parse(localStorage.getItem('nxt-leader-debrief') || '{}');
+S.ratings = S.ratings || {};
+S.programRatings = S.programRatings || {};
+let xp = S._xp || 0, screenIdx = S._screen || 0;
+const answered = new Set(S._answered || []);
+const badges = new Set(S._badges || []);
+
+const LEVELS = [[0,'Scout'],[70,'Mentor'],[150,'Coach'],[250,'Captain'],[360,'Commander'],[480,'nxT Legend']];
+const TOTAL_XP_EST = 540;
+
+function save(){
+  S._xp = xp; S._screen = screenIdx; S._answered = [...answered]; S._badges = [...badges];
+  localStorage.setItem('nxt-leader-debrief', JSON.stringify(S));
+}
+function gain(key, amount){
+  if(answered.has(key)) return;
+  answered.add(key); xp += amount; renderHUD(); save();
+}
+function renderHUD(){
+  document.getElementById('xp').textContent = xp + ' XP';
+  document.getElementById('bar-fill').style.width = Math.min(100, xp/TOTAL_XP_EST*100) + '%';
+  let name = LEVELS[0][1];
+  for(const [min,n] of LEVELS) if(xp >= min) name = n;
+  const el = document.getElementById('lvl');
+  if(el.textContent !== name && xp > 0){ el.textContent = name; toast('trendup','Level up!','You are now: ' + name); }
+  else el.textContent = name;
+}
+let toastTimer;
+function toast(iconName, title, sub){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-icon').innerHTML = I(iconName, 28);
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function awardBadge(id, iconName, name){
+  if(badges.has(id)) return;
+  badges.add(id); toast(iconName, 'Badge unlocked: ' + name, 'Added to your trophy shelf'); save();
+}
+
+/* ================= CONTENT ================= */
+const AREAS = ['Education (BuildED · Edu 4.0)','Health & Clinical','Community Impact','Product & Engineering','Data & AI','Media & Design','Operations','Hospitality & Local Business','Other'];
+const FACES = [['angry','Rough','#dc2626'],['frown','Below bar','#ea580c'],['meh','Meets bar','#d97706'],['smile','Strong','#16a34a'],['laugh','Exceptional','#059669']];
+const HATS = [
+  ['The Coach','target','Drills, reps, feedback — you build skill deliberately.'],
+  ['The Captain','compass','You set direction and keep the mission on course.'],
+  ['The Door-Opener','key','You create the rooms, intros, and chances that change trajectories.'],
+  ['The Safety Net','shield','You let them stretch, knowing you\'ll catch what falls.'],
+  ['The Architect','wrench','You design the work itself so the growth is built in.']
+];
+const SKILL_CHIPS = ['AI & prompt engineering','Web / app development','Data analysis','UX / UI design','Video & media','Teaching & facilitation','Project management','Research','Community outreach','Sales & pitching','Healthcare workflows','No-code tools','Public speaking','Entrepreneurship'];
+const GROWTH_CHIPS = ['Communication & updates','Technical depth','Attention to detail','Time management','Asking for help sooner','Confidence & voice','Ownership & follow-through','Working with stakeholders','Scoping their own work','Consistency'];
+
+const CORE = [
+  ['reliability','Reliability & follow-through','Did they do what they said, when they said?'],
+  ['communication','Communication & updates','Clear questions, clear status — without you chasing?'],
+  ['quality','Quality of work','How close to shippable was their output this month?'],
+  ['initiative','Initiative','Did they spot and start things, or wait to be told?']
+];
+const MONTH_EXTRA = {
+  1:[['landing','Landing & integration','How quickly did they find their feet — people, tools, rhythm?'],
+     ['coachability','Coachability','Do they take feedback and actually run with it?']],
+  2:[['growthRate','Skill growth','Visible progress compared to their first month?'],
+     ['collaboration','Collaboration','How are they working with the rest of the crew?']],
+  3:[['ownership','Ownership','Do they treat their work like it\'s theirs?'],
+     ['readiness','Ready for the paid phase','Would you trust them with paid, real-stakes work next month?']],
+  4:[['stakes','Handling real stakes','First paid month — how did they carry real consequences?'],
+     ['accountability','Accountability','When something slipped, did they own it?']],
+  5:[['independence','Independence','Can they run without you for a week?'],
+     ['leadership','Leadership potential','Could they guide the next intern?']],
+  6:[['overall','Overall performance','The whole six months, one honest rating.'],
+     ['hireability','Would you want them on your team','Gut check: long-term, on your own crew?']]
+};
+const PROGRAM = [
+  ['mentorTime','Your time to mentor well','Did nxT give you enough room to actually mentor?'],
+  ['programClarity','Program structure & clarity','Did you know what the program expected of you and the intern this month?'],
+  ['nxtSupport','Support from nxT leadership','Backup, answers, and air cover when you needed it?'],
+  ['asyncLeader','Async with your intern','Did the async rhythm work from the mentor\'s side?'],
+  ['virtualLeader','Virtual connection','Could you really see how they were doing, fully remote?']
+];
+
+/* ================= HELPERS ================= */
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+function chipGroup(key, options, multi, xpAmount=15){
+  const c = el(`<div class="chips" role="group"></div>`);
+  const sel = new Set(S[key] || (multi ? [] : (S[key] ? [S[key]] : [])));
+  options.forEach(opt=>{
+    const b = el(`<button type="button" class="chip${sel.has(opt)?' on':''}">${opt}</button>`);
+    b.onclick = ()=>{
+      if(multi){
+        b.classList.toggle('on');
+        b.classList.contains('on') ? sel.add(opt) : sel.delete(opt);
+        S[key] = [...sel];
+      } else {
+        c.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on'); S[key] = opt;
+      }
+      gain(key, xpAmount); save();
+    };
+    c.appendChild(b);
+  });
+  return c;
+}
+function faceScale(store, key, xpAmount=15){
+  const row = el(`<div class="emoji-row" role="radiogroup"></div>`);
+  FACES.forEach(([icon,label,color],i)=>{
+    const v = i+1;
+    const b = el(`<button type="button" class="emoji-btn${store[key]===v?' on':''}" style="--face:${color}"><span class="e">${I(icon,26)}</span><small>${label}</small></button>`);
+    b.onclick = ()=>{
+      row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); store[key]=v; gain('r_'+key, xpAmount); save();
+    };
+    row.appendChild(b);
+  });
+  return row;
+}
+function ratingBlock(items, store){
+  const wrap = document.createElement('div');
+  items.forEach(([key,label,desc])=>{
+    const r = el(`<div class="rate-row"><div class="rlabel">${label}</div><div class="rdesc">${desc}</div></div>`);
+    r.appendChild(faceScale(store, key));
+    wrap.appendChild(r);
+  });
+  return wrap;
+}
+function textInput(key, placeholder, type='text', xpAmount=15){
+  const i = el(`<input type="${type}" placeholder="${placeholder}">`);
+  i.value = S[key] || '';
+  i.oninput = ()=>{ S[key]=i.value; save(); };
+  i.onblur = ()=>{ if(i.value.trim()) gain(key, xpAmount); };
+  return i;
+}
+function textArea(key, placeholder, xpAmount=20){
+  const i = el(`<textarea placeholder="${placeholder}"></textarea>`);
+  i.value = S[key] || '';
+  i.oninput = ()=>{ S[key]=i.value; save(); };
+  i.onblur = ()=>{ if(i.value.trim()) gain(key, xpAmount); };
+  return i;
+}
+function q(labelHtml, hint, node, optional=true){
+  const w = el(`<div class="q"><span class="q-label">${labelHtml}${optional?'<span class="optional">optional</span>':''}</span>${hint?`<span class="q-hint">${hint}</span>`:''}</div>`);
+  w.appendChild(node);
+  return w;
+}
+
+/* ================= SCREENS ================= */
+const screens = [];
+
+/* --- 0 · Welcome --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <div class="hero">
+      <span class="big-emoji">🧭</span>
+      <h1>Your intern leveled up.<br>Time for the mentor's read.</h1>
+      <p class="sub">Every month, interns debrief their side — this is <b style="color:var(--txt)">yours</b>. Evaluate the intern honestly, rate how the program supported you, and unlock your mentor archetype. Your read is what turns their month into a decision.</p>
+      <div class="pill-row">
+        <span class="pill">${I('clock',14)} ~6 minutes</span><span class="pill">${I('save',14)} Auto-saves as you go</span><span class="pill">${I('medal',14)} 6 badges to earn</span><span class="pill">${I('eye',14)} Seen only by program admins</span>
+      </div>
+    </div>
+    <div class="card" id="c0"></div>
+    <div class="nav-row"><span></span><button class="btn btn-primary" id="start">Start the debrief →</button></div>
+  </section>`);
+  const c = s.querySelector('#c0');
+  c.appendChild(q('Your access code','From the program admin. Single-use, and never stored with your answers.', (()=>{
+    const i = el(`<input type="text" placeholder="NXT-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" style="font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.08em">`);
+    i.value = S.accessCode || '';
+    i.oninput = ()=>{ i.value = i.value.toUpperCase(); S.accessCode = i.value; save(); };
+    return i;
+  })(), false));
+  c.appendChild(q('Which month did the intern just finish?','This tunes the evaluation to where they are in the journey.', (()=>{
+    const g = el(`<div class="levels"></div>`);
+    for(let m=1;m<=6;m++){
+      const b = el(`<button type="button" class="${S.month===m?'on':''}"><b>Month ${m}</b><small>${m<=3?'Learning phase':'Paid phase'}${m===3?' · Decision':''}${m===6?' · Finale':''}</small></button>`);
+      b.onclick = ()=>{ g.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S.month=m; gain('month',15); save(); };
+      g.appendChild(b);
+    }
+    return g;
+  })(), false));
+  c.appendChild(q('Who are you evaluating?','First name or initials are fine — admins match it to the roster.', textInput('internName','e.g. Alex R.'), false));
+  c.appendChild(q('Your name','', textInput('leaderName','e.g. Jordan Vega')));
+  c.appendChild(q('Your area / brand','', chipGroup('area', AREAS, false)));
+  c.appendChild(q('Which hat did you wear most this month?','This one feeds your mentor archetype. 👀 No wrong answers.', chipGroup('hat', HATS.map(h=>h[0]), false)));
+  s.querySelector('#start').onclick = async ()=>{
+    const btn = s.querySelector('#start');
+    if(!(S.accessCode||'').trim()){ toast('eyeoff','Access code needed','Enter the code from your program admin to unlock the debrief.'); return; }
+    if(!S.month){ toast('map','Pick the month first','Select which month the intern just finished.'); return; }
+    if(!(S.internName||'').trim()){ toast('users','Who are you evaluating?','Add the intern\'s name so the evaluation lands with the right person.'); return; }
+    btn.disabled = true; btn.textContent = 'Checking your code…';
+    let valid = true;
+    try{
+      const r = await fetch('/api/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:S.accessCode})});
+      if(r.ok) valid = (await r.json()).valid;
+    }catch(e){}
+    if(!valid){
+      btn.disabled = false; btn.textContent = 'Start the debrief →';
+      toast('eyeoff','Code not recognized','Double-check it, or ask the program admin for a fresh one.');
+      return;
+    }
+    awardBadge('b0','clapper','Roll Call'); go(1);
+  };
+  return s;
+});
+
+/* --- 1 · The intern's month --- */
+screens.push(()=>{
+  const m = S.month || 6;
+  const name = (S.internName||'your intern').split(' ')[0];
+  const sub = {
+    1:`${name}'s first month — everyone starts in Education. What did their landing actually look like?`,
+    2:`Month 2 for ${name}: deeper into the learning phase. Map what they touched.`,
+    3:`${name} just finished the learning phase. Map it before the big call.`,
+    4:`First paid month for ${name}. Where did the real work happen?`,
+    5:`Month 5 — ${name} deep in the paid phase. Where are they making a mark?`,
+    6:`The whole journey. Where did ${name} end up mattering most?`
+  }[m];
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">${I('map',14)} Chapter 1 · Month ${m}</span>
+    <h2>${I('map',24)} ${name}'s month</h2>
+    <p class="sub">${sub}</p>
+    <div class="card" id="c1"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  const c = s.querySelector('#c1');
+  c.appendChild(q(m===6?'Which areas did they work in across the internship?':`Which areas did they work in during month ${m}?`,'Tap all that apply.', chipGroup('areas', AREAS, true, 20), false));
+  c.appendChild(q('In one sentence: what was their mission this month?','How you\'d describe their work to another lead.', textArea('mission','e.g. Owned the analytics module for the Edu 4.0 quiz builder…')));
+  c.appendChild(q('Their biggest step forward this month','The change you noticed — skill, attitude, ownership, anything.', textArea('stepForward','e.g. Stopped waiting for specs — started proposing them.')));
+  return s;
+});
+
+/* --- 2 · Evaluate the intern --- */
+screens.push(()=>{
+  const m = S.month || 6;
+  const name = (S.internName||'your intern').split(' ')[0];
+  const sub2 = {
+    1:'First read. Be honest — month 1 ratings set the baseline everything else is measured against.',
+    2:'The novelty is gone; the habits are showing. Rate what you actually saw.',
+    3:'The decision month. Your ratings here feed the unpaid → paid call — make them count.',
+    4:'First month with real stakes. Did they rise to it?',
+    5:'Nearly there. Rate them like a colleague, not a student.',
+    6:'The final read — six months, one honest evaluation.'
+  }[m];
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">${I('swords',14)} Chapter 2 · The evaluation</span>
+    <h2>${I('swords',24)} How did ${name} do?</h2>
+    <p class="sub">${sub2}</p>
+    <div class="card">
+      <h3>${I('target',18)} Month ${m} focus</h3>
+      <div id="pFocus"></div>
+    </div>
+    <div class="card">
+      <h3>${I('thermometer',18)} The fundamentals</h3>
+      <div id="pCore"></div>
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  s.querySelector('#pFocus').appendChild(ratingBlock(MONTH_EXTRA[m]||MONTH_EXTRA[6], S.ratings));
+  s.querySelector('#pCore').appendChild(ratingBlock(CORE, S.ratings));
+  return s;
+});
+
+/* --- 3 · Evidence --- */
+screens.push(()=>{
+  const name = (S.internName||'your intern').split(' ')[0];
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">${I('mic',14)} Chapter 3 · The evidence</span>
+    <h2>${I('mic',24)} Receipts &amp; growth</h2>
+    <p class="sub">Ratings need stories behind them. What did ${name} actually do — and where should they aim next?</p>
+    <div class="card" id="c3"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  const c = s.querySelector('#c3');
+  c.appendChild(q('Their standout contribution this month','The thing you\'d mention if leadership asked "what did they do?"', textArea('standout','e.g. The dashboard they built solo is now in front of real teachers…')));
+  c.appendChild(q('A moment they genuinely impressed you','', textArea('impressed','A save, an idea, a hard thing handled well…')));
+  c.appendChild(q('Skills they visibly leveled up','Tap all that apply.', chipGroup('skillsGrown', SKILL_CHIPS, true, 20)));
+  c.appendChild(q('Where should they focus next?','Pick up to 3 — this becomes their growth map.', chipGroup('growthFocus', GROWTH_CHIPS, true, 20), false));
+  c.appendChild(q('One piece of coaching, in your words','Write it like you\'d say it to their face — constructive and concrete.', textArea('growthNotes','e.g. Your instincts are good — trust them earlier and flag blockers the same day…')));
+  return s;
+});
+
+/* --- 4 · The program, from your seat --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">${I('wifi',14)} Chapter 4 · The program</span>
+    <h2>${I('wifi',24)} The program, from your seat</h2>
+    <p class="sub">Now flip it: rate how well nxT set <b style="color:var(--txt)">you</b> up to mentor — including the fully-virtual, async reality of it.</p>
+    <div class="card" id="c4a"></div>
+    <div class="card" id="c4b">
+      <h3>${I('flame',18)} Straight talk</h3>
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Final chapter →</button></div>
+  </section>`);
+  s.querySelector('#c4a').appendChild(ratingBlock(PROGRAM, S.programRatings));
+  const c = s.querySelector('#c4b');
+  c.appendChild(q('One thing the program should <b>keep doing</b>','', textArea('keep','What\'s working from the mentor\'s side?')));
+  c.appendChild(q('One thing the program should <b>fix or change</b>','Straight to the people who can change it.', textArea('fix','If you ran the internship program, what would you change first?')));
+  return s;
+});
+
+/* --- 5 · The call --- */
+screens.push(()=>{
+  const m = S.month || 6;
+  const name = (S.internName||'your intern').split(' ')[0];
+  const final = m===6, decision = m===3;
+  const head5 = final ? 'The final call' : decision ? 'The paid-phase call' : 'Setting up month '+(m+1);
+  const sub5 = final
+    ? `Six months in — what should happen with ${name}, and would you do this again?`
+    : decision
+      ? `This is the one that matters: does ${name} move to the paid phase next month?`
+      : `Point ${name}'s next month in the right direction — then your archetype awaits.`;
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">${I('star',14)} Chapter 5 · ${final?'New game +':decision?'Decision time':'Next level'}</span>
+    <h2>${I('star',24)} ${head5}</h2>
+    <p class="sub">${sub5}</p>
+    <div class="card" id="c5"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" id="finish">Finish &amp; reveal my archetype ${I('gift',18)}</button></div>
+  </section>`);
+  const c = s.querySelector('#c5');
+  if(decision){
+    c.appendChild(q(`Your call: does ${name} move to the paid phase?`,'', chipGroup('paidRecommendation',['Absolutely ready — promote','Ready, with closer support','Needs more time in the learning phase','Not the right fit'], false, 25), false));
+  }
+  if(final){
+    c.appendChild(q(`Your recommendation for ${name}`,'', chipGroup('finalRecommendation',['Hire full-time','Hire part-time','Keep freelance / per-project','Stay in touch','Not now'], false, 25), false));
+    c.appendChild(q('Would you mentor another intern?','', chipGroup('anotherIntern',['Absolutely','Yes, with program tweaks','Maybe','No'], false, 20), false));
+  }
+  if(!final){
+    c.appendChild(q(`What should ${name} focus on in month ${m+1}?`,'One concrete target for the next debrief.', textInput('nextFocus','e.g. Run one project end-to-end without check-ins')));
+    c.appendChild(q('What support do YOU need from nxT next month?','', textInput('supportNeeded','e.g. 2 protected hours a week for mentoring')));
+  }
+  c.appendChild(q('How likely are you to recommend mentoring in this program to a colleague?','', (()=>{
+    const w = document.createElement('div');
+    const n = el(`<div class="nps"></div>`);
+    for(let i=0;i<=10;i++){
+      const b = el(`<button type="button"${S.nps===i?' class="on"':''}>${i}</button>`);
+      b.onclick = ()=>{ n.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S.nps=i; gain('nps',20); save(); };
+      n.appendChild(b);
+    }
+    w.appendChild(n);
+    w.appendChild(el(`<div class="nps-legend"><span>Not a chance</span><span>Sign them up</span></div>`));
+    return w;
+  })(), false));
+  s.querySelector('#finish').onclick = finish;
+  return s;
+});
+
+/* --- 6 · Finale --- */
+screens.push(()=>{
+  const m = S.month || 6;
+  const name = (S.internName||'your intern').split(' ')[0];
+  const hat = HATS.find(h=>h[0]===S.hat) || HATS[0];
+  const s = el(`<section class="screen">
+    <div class="hero">
+      <span class="big-icon">${I('medal', 64)}</span>
+      <h1>${m===6?'Final evaluation complete':m===3?'Decision made':'Month '+m+' evaluation complete'}${S.leaderName ? ', ' + S.leaderName.split(' ')[0] : ''}!</h1>
+      <p class="sub">${name}'s month is on the record${m===3?' — and the paid-phase call is in':''}. ${m<6?'See you at the month '+(m+1)+' debrief.':'Thank you for six months of building someone.'}</p>
+    </div>
+    <div class="archetype">
+      <span class="a-icon">${I(hat[1], 52)}</span>
+      <h3>${hat[0]}</h3>
+      <p class="sub" style="margin-top:6px">${hat[2]}</p>
+    </div>
+    <div class="card">
+      <h3>${I('trophy',18)} Trophy shelf</h3>
+      <div class="badge-grid" id="shelf"></div>
+      <p class="sub" style="text-align:center;font-family:'Space Grotesk';font-weight:700;color:var(--green)" id="final-xp"></p>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" data-back>← Edit answers</button>
+      <button class="btn btn-primary" id="submit">Submit my evaluation ${I('send',18)}</button>
+    </div>
+    <div class="error-note" id="err"></div>
+  </section>`);
+  const ALL_BADGES = [['b0','clapper','Roll Call'],['b1','compass','Scout Report'],['b2','swords','Straight Shooter'],['b3','mic','Talent Spotter'],['b4','flame','Program Builder'],['b5','star','Decision Maker']];
+  const shelf = s.querySelector('#shelf');
+  ALL_BADGES.forEach(([id,ic,n])=>{
+    shelf.appendChild(el(`<div class="badge${badges.has(id)?' won':''}"><span class="be">${I(ic,28)}</span><small>${n}</small></div>`));
+  });
+  s.querySelector('#final-xp').textContent = xp + ' XP · ' + document.getElementById('lvl').textContent;
+  s.querySelector('#submit').onclick = submit;
+  return s;
+});
+
+/* ================= NAV ================= */
+function go(i){
+  if(i===2) awardBadge('b1','compass','Scout Report');
+  if(i===3) awardBadge('b2','swords','Straight Shooter');
+  if(i===4) awardBadge('b3','mic','Talent Spotter');
+  if(i===5) awardBadge('b4','flame','Program Builder');
+  screenIdx = i; save(); render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function finish(){
+  awardBadge('b5','star','Decision Maker');
+  go(6);
+  setTimeout(confettiBurst, 400);
+}
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const s = screens[screenIdx]();
+  s.classList.add('active');
+  app.appendChild(s);
+  s.querySelectorAll('[data-back]').forEach(b=> b.onclick = ()=> go(screenIdx-1));
+  s.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=> go(screenIdx+1));
+  renderHUD();
+}
+
+/* ================= SUBMIT ================= */
+async function submit(){
+  const btn = document.getElementById('submit');
+  const err = document.getElementById('err');
+  btn.disabled = true; btn.textContent = 'Transmitting…';
+  const payload = {
+    formType:'leader',
+    accessCode:S.accessCode||null,
+    month:S.month||null, phase:S.month ? (S.month<=3?'learning':'paid') : null,
+    leaderName:S.leaderName||null, internName:S.internName||null, area:S.area||null, hat:S.hat||null,
+    areas:S.areas||[], mission:S.mission||null, stepForward:S.stepForward||null,
+    ratings:S.ratings, programRatings:S.programRatings,
+    standout:S.standout||null, impressed:S.impressed||null,
+    skillsGrown:S.skillsGrown||[], growthFocus:S.growthFocus||[], growthNotes:S.growthNotes||null,
+    keep:S.keep||null, fix:S.fix||null,
+    paidRecommendation:S.paidRecommendation||null, finalRecommendation:S.finalRecommendation||null,
+    anotherIntern:S.anotherIntern||null, nextFocus:S.nextFocus||null, supportNeeded:S.supportNeeded||null,
+    nps:S.nps??null, xp, badges:[...badges], archetype:S.hat||null
+  };
+  try{
+    const r = await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!r.ok){
+      let msg = 'HTTP '+r.status;
+      try{ msg = (await r.json()).error || msg; }catch(_){}
+      throw new Error(r.status===403 ? 'CODE:'+msg : msg);
+    }
+    btn.innerHTML = 'Received — thank you! ' + I('sparkles',18);
+    confettiBurst(); confettiBurst();
+    toast('send','Evaluation transmitted','Thank you for the honest read.');
+    localStorage.removeItem('nxt-leader-debrief');
+    err.style.display='none';
+  }catch(e){
+    const codeProblem = String(e.message||'').startsWith('CODE:');
+    btn.disabled = false; btn.innerHTML = 'Try again ' + I('send',18);
+    err.style.display='block';
+    err.innerHTML = codeProblem
+      ? e.message.slice(5) + '. Ask the program admin for a fresh code — your answers are saved on this device, so nothing is lost.'
+      : 'Hmm, transmission failed. Your answers are still saved on this device — try again in a moment.';
+  }
+}
+
+/* ================= CONFETTI ================= */
+function confettiBurst(){
+  const cv = document.getElementById('confetti');
+  const ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#8b5cf6','#0ea5e9','#10b981','#f59e0b','#ec4899'];
+  const parts = Array.from({length:120},()=>({
+    x: innerWidth/2 + (Math.random()-.5)*200, y: innerHeight*0.35,
+    vx:(Math.random()-.5)*14, vy:-Math.random()*14-4,
+    s: Math.random()*7+4, c: colors[Math.floor(Math.random()*colors.length)],
+    r: Math.random()*Math.PI, vr:(Math.random()-.5)*.3, life: 1
+  }));
+  let frame = 0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.35; p.r+=p.vr; p.life-=.008;
+      ctx.save(); ctx.globalAlpha=Math.max(0,p.life); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6); ctx.restore();
+    });
+    if(++frame<160) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+render();
+</script>
+</body>
+</html>
