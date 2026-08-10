@@ -33,6 +33,27 @@ localStorage, fully mobile-friendly.
 - `api/submit.js` — Vercel serverless function; stores each response as JSON in Vercel Blob (`responses/`)
 - `api/responses.js` — admin endpoint to review responses
 
+## Access codes (anti-abuse, anonymity-preserving)
+
+Submissions require a **single-use access code** so bots and outsiders can't
+abuse the survey, while interns can still answer anonymously:
+
+- Codes look like `NXT-XXXX-XXXX` and are handed out by the coordinator
+  (one per intern per month).
+- The code is verified when the intern starts, and consumed on submit.
+- The code is **never stored with the response** — it proves "real intern"
+  without linking answers to a person.
+
+Manage codes (admin):
+
+```
+# generate a fresh batch (default 10, max 100)
+https://survey.impactos.nxtlab.app/api/codes?key=YOUR_ADMIN_KEY&count=12
+
+# see all codes and their used/unused status
+https://survey.impactos.nxtlab.app/api/codes?key=YOUR_ADMIN_KEY&action=list
+```
+
 ## Viewing responses (admin)
 
 ```

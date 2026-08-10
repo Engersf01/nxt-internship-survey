@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { normalize, findCode } from './_codes.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -9,6 +10,24 @@ export default async function handler(req, res) {
     if (!data || typeof data !== 'object') {
       return res.status(400).json({ error: 'Invalid payload' });
     }
+
+    // --- access-code gate: proves "real intern", stays anonymous ---
+    const code = normalize(data.accessCode);
+    if (!code) {
+      return res.status(403).json({ error: 'Access code required' });
+    }
+    const codeData = await findCode(code);
+    if (!codeData) {
+      return res.status(403).json({ error: 'Invalid access code' });
+    }
+    if (codeData.used) {
+      return res.status(403).json({ error: 'This access code was already used' });
+    }
+
+    // The code is intentionally NOT stored with the response — codes prove
+    // eligibility without linking a submission back to a person.
+    delete data.accessCode;
+
     const raw = JSON.stringify({ ...data, submittedAt: new Date().toISOString() }, null, 2);
     if (raw.length > 200_000) {
       return res.status(413).json({ error: 'Payload too large' });
@@ -19,6 +38,16 @@ export default async function handler(req, res) {
       contentType: 'application/json',
       addRandomSuffix: true,
     });
+
+    // consume the code (after the response is safely stored)
+    await put(`codes/${code}.json`, JSON.stringify({ ...codeData, used: true, usedAt: new Date().toISOString() }), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 60,
+    });
+
     return res.status(200).json({ ok: true, id });
   } catch (e) {
     console.error('submit error', e);
