@@ -161,6 +161,11 @@ input[type=range]{flex:1;accent-color:#7c3aed;height:22px}
 .archetype .a-icon{display:flex;justify-content:center;color:var(--accent2);margin-bottom:10px}
 .archetype h3{font-size:1.4rem;justify-content:center;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:98}
+/* floating admin entry */
+#admin-link{position:fixed;right:16px;bottom:16px;z-index:60;width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--card-br);
+  color:#94a3b8;box-shadow:var(--shadow);transition:all .15s}
+#admin-link:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
 .error-note{background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:14px;display:none;color:#9d174d}
 .error-note a{color:var(--accent)}
 .checkbox-line{display:flex;gap:10px;align-items:flex-start;font-size:.87rem;color:var(--muted);margin-top:10px;cursor:pointer}
@@ -186,6 +191,8 @@ input[type=range]{flex:1;accent-color:#7c3aed;height:22px}
 </div>
 
 <div class="wrap" id="app"></div>
+
+<a id="admin-link" href="/admin" title="Program admin" aria-label="Program admin"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></a>
 
 <div id="toast"><span class="t-icon" id="toast-icon"></span><div><b id="toast-title"></b><small id="toast-sub"></small></div></div>
 <canvas id="confetti"></canvas>

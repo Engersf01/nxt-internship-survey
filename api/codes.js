@@ -1,8 +1,9 @@
 import { put, list } from '@vercel/blob';
+import { isAuthed } from './_auth.js';
 
-// Admin endpoint to manage access codes.
-//   GET /api/codes?key=ADMIN_KEY&count=10    → generate 10 fresh codes
-//   GET /api/codes?key=ADMIN_KEY&action=list → list all codes + used status
+// Admin endpoint to manage access codes (auth: Bearer token, ?token=, or ?key=).
+//   GET /api/codes?count=10    → generate 10 fresh codes
+//   GET /api/codes?action=list → list all codes + used status
 const CHARS = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'; // no 0/O/1/I lookalikes
 
 function generateCode() {
@@ -30,7 +31,7 @@ async function listAll(prefix) {
 }
 
 export default async function handler(req, res) {
-  if (!process.env.ADMIN_KEY || req.query.key !== process.env.ADMIN_KEY) {
+  if (!isAuthed(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   try {

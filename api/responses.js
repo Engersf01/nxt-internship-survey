@@ -1,8 +1,10 @@
 import { list } from '@vercel/blob';
+import { isAuthed } from './_auth.js';
 
-// Admin endpoint: GET /api/responses?key=ADMIN_KEY[&format=csv]
+// Admin endpoint: GET /api/responses  (auth: Bearer token, ?token=, or ?key=ADMIN_KEY)
+// Optional: &format=csv
 export default async function handler(req, res) {
-  if (!process.env.ADMIN_KEY || req.query.key !== process.env.ADMIN_KEY) {
+  if (!isAuthed(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   try {
