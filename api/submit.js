@@ -1,5 +1,5 @@
 import { put } from '@vercel/blob';
-import { normalize, findCode } from './_codes.js';
+import { normalize, codeState } from './_codes.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -16,13 +16,21 @@ export default async function handler(req, res) {
     if (!code) {
       return res.status(403).json({ error: 'Access code required' });
     }
-    const codeData = await findCode(code);
-    if (!codeData) {
+    const state = await codeState(code);
+    if (!state.issued) {
       return res.status(403).json({ error: 'Invalid access code' });
     }
-    if (codeData.used) {
+    if (state.used) {
       return res.status(403).json({ error: 'This access code was already used' });
     }
+
+    // Consume first (fail-closed), by existence marker — see api/_codes.js.
+    await put(`used/${code}.json`, JSON.stringify({ usedAt: new Date().toISOString() }), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
 
     // The code is intentionally NOT stored with the response — codes prove
     // eligibility without linking a submission back to a person.
@@ -37,15 +45,6 @@ export default async function handler(req, res) {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: true,
-    });
-
-    // consume the code (after the response is safely stored)
-    await put(`codes/${code}.json`, JSON.stringify({ ...codeData, used: true, usedAt: new Date().toISOString() }), {
-      access: 'public',
-      contentType: 'application/json',
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 60,
     });
 
     return res.status(200).json({ ok: true, id });
