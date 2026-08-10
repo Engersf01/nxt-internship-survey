@@ -284,23 +284,26 @@ const AREAS = ['Education (BuildED · Edu 4.0)','Health & Clinical','Community I
 const AVATARS = ['rocket','lightbulb','palette','wrench','sprout','zap','target','flask','globe','gamepad','radio','bot'];
 const FACES = [['angry','Rough','#dc2626'],['frown','Meh','#ea580c'],['meh','Okay','#d97706'],['smile','Good','#16a34a'],['laugh','Amazing','#059669']];
 const R = {
-  onboarding:['onboarding','Onboarding & welcome','How clear was your first weeks — goals, people, tools?'],
+  onboarding:['onboarding','Onboarding & welcome','How clear was your first month — goals, people, tools?'],
+  firstwork:['firstwork','First real tasks','Did you get to do real things, or just watch from the bench?'],
   mentorship:['mentorship','Mentorship & guidance','Did someone actually invest in your growth this month?'],
   learning:['learning','Learning opportunities','Workshops, shadowing, real skills — not busywork'],
-  fairness:['fairness','Value of the unpaid phase','Did these 3 months feel like a fair trade — real learning for your time?'],
+  fairness:['fairness','Value of the unpaid phase','Now that the learning phase is done — was it a fair trade: real learning for your time?'],
   ready:['ready','Ready to level up','Do you feel prepared to step into the paid phase?'],
-  transition:['transition','The step up to paid','Was the move from unpaid → paid clear and earned?'],
+  clarity:['clarity','The road ahead','Is it clear what changes next month — pay, hours, expectations, responsibility?'],
+  transition:['transition','The step up to paid','Did the move from unpaid → paid feel clear and earned?'],
+  paysetup:['paysetup','Pay & expectations','Were pay, hours, and expectations handled clearly and professionally?'],
   responsibility:['responsibility','Real responsibility','Did you own real work that mattered this month?'],
   feedback:['feedback','Feedback & check-ins','Did you know how you were doing, often enough?'],
   growth:['growth','Growth & challenge','Were you stretched in a good way?']
 };
 function phaseItems(m){
-  if(m===1) return [R.onboarding, R.mentorship, R.learning];
+  if(m===1) return [R.onboarding, R.firstwork, R.mentorship, R.learning];
   if(m===2) return [R.mentorship, R.learning, R.growth];
-  if(m===3) return [R.mentorship, R.learning, R.fairness, R.ready];
-  if(m===4) return [R.transition, R.responsibility, R.feedback];
+  if(m===3) return [R.mentorship, R.learning, R.fairness, R.ready, R.clarity];
+  if(m===4) return [R.transition, R.paysetup, R.responsibility, R.feedback];
   if(m===5) return [R.responsibility, R.feedback, R.growth];
-  return [R.transition, R.responsibility, R.feedback, R.growth];
+  return [R.responsibility, R.feedback, R.growth];
 }
 const RATINGS_OVERALL = [
   ['culture','Team culture & belonging','Did you feel like part of the crew?'],
@@ -434,18 +437,30 @@ screens.push(()=>{
 
 /* --- 1 · Journey map --- */
 screens.push(()=>{
+  const m = S.month || 6;
+  const sub = {
+    1:'Everyone starts in the Education brand — month 1 is about landing. Where did your first level take you?',
+    2:'Month 2: some interns go deeper in Education, others start branching into a new area. Where did your path go?',
+    3:'Last month of the learning phase — map where you\'ve been before you level up to paid.',
+    4:'First month of the paid phase — new stakes, sometimes a new area. Where did the mission take you?',
+    5:'Month 5: deep in the paid phase. Where are you making your mark?',
+    6:'Every intern starts in the Education brand, then branches out. Where did your whole journey take you?'
+  }[m];
   const s = el(`<section class="screen">
-    <span class="chapter-tag">${I('map',14)} Chapter 1 · 5 badges left</span>
+    <span class="chapter-tag">${I('map',14)} Chapter 1 · Month ${m}</span>
     <h2>${I('map',24)} Your journey map</h2>
-    <p class="sub">Every intern starts in the Education brand, then branches out. Where did your path take you?</p>
+    <p class="sub">${sub}</p>
     <div class="card" id="c1"></div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
   </section>`);
-  const m1 = S.month || 6;
   const c = s.querySelector('#c1');
-  c.appendChild(q(m1===6?'Which areas did you work in across the internship?':`Which areas did you work in during month ${m1}?`,'Tap all that apply — Education first, then wherever the mission took you.', chipGroup('areas', AREAS, true, 20), false));
-  c.appendChild(q('Which area was your favorite so far?','', chipGroup('favoriteArea', AREAS, false)));
-  c.appendChild(q(m1===6?'In one sentence: what was your mission at nxT?':`In one sentence: what was your mission this month?`,'The elevator-pitch version of what you worked on.', textArea('mission','e.g. I helped build interactive learning tools for the Edu 4.0 platform, then moved into health workflows…')));
+  c.appendChild(q(m===6?'Which areas did you work in across the internship?':`Which areas did you work in during month ${m}?`, m===1?'Probably Education — but tap anything else you touched.':'Tap all that apply.', chipGroup('areas', AREAS, true, 20), false));
+  if(m===1){
+    c.appendChild(q('What surprised you most about nxT in your first month?','The thing you didn\'t expect — good or bad.', textArea('surprise','e.g. I didn\'t expect to be trusted with real work in week one…')));
+  } else {
+    c.appendChild(q(m===3?'Which area was your favorite of the learning phase?':'Which area has been your favorite so far?','', chipGroup('favoriteArea', AREAS, false)));
+  }
+  c.appendChild(q(m===6?'In one sentence: what was your mission at nxT?':`In one sentence: what was your mission in month ${m}?`,'The elevator-pitch version of what you worked on.', textArea('mission','e.g. I helped build interactive learning tools for the Edu 4.0 platform…')));
   return s;
 });
 
@@ -453,12 +468,18 @@ screens.push(()=>{
 screens.push(()=>{
   const m = S.month || 6;
   const learning = m <= 3;
+  const sub2 = {
+    1:'First level cleared. Month 1 was about landing well — rate how nxT set you up.',
+    2:'Momentum month. You know the place now — rate how the learning phase is actually treating you.',
+    3:'Learning phase complete. Before you step into the paid phase, rate how these 3 months wrapped up — and whether the road ahead is clear.',
+    4:'First paid month done. Rate how the step up from unpaid to paid actually went — this is the moment nxT most needs to get right.',
+    5:'Deep in the paid phase. Rate how month 5 stretched you.',
+    6:'The final check-in. Rate how your last month landed — the victory lap comes next.'
+  }[m];
   const s = el(`<section class="screen">
     <span class="chapter-tag">${I('swords',14)} Chapter 2 · Month ${m} ratings</span>
     <h2>${I('swords',24)} Month ${m} check-in</h2>
-    <p class="sub">${learning
-      ? `You're in the learning phase (months 1–3). Rate month ${m} honestly — your feedback tunes the program while you're still in it.`
-      : `You're in the paid phase (months 4–6). Real stakes, real work — rate month ${m} honestly. This goes straight to the people who can change things.`}</p>
+    <p class="sub">${sub2}</p>
     <div class="card">
       <h3>${I(learning?'sprout':'briefcase',18)} ${learning?'The learning phase':'The paid phase'} — month ${m}</h3>
       <div id="p1"></div>
@@ -566,7 +587,7 @@ screens.push(()=>{
   </section>`);
   const m4 = S.month || 6;
   const c = s.querySelector('#c4');
-  c.appendChild(q(m4===6?'Your single biggest contribution of the internship':'Your biggest contribution this month','If you could point at one thing and say "I did that" — what is it?', textArea('contribution','e.g. The onboarding flow I redesigned is now used for every new student…')));
+  c.appendChild(q(m4===6?'Your single biggest contribution of the internship':'Your biggest contribution this month', m4===1?'First month counts — even a small win, a fix, or a good question is a contribution.':'If you could point at one thing and say "I did that" — what is it?', textArea('contribution','e.g. The onboarding flow I redesigned is now used for every new student…')));
   c.appendChild(q('Can you put a number on it?','People reached, hours saved, features shipped, students taught — any metric counts.', textInput('metric','e.g. 120 students used the tool · 3 features shipped · cut setup time by half')));
   c.appendChild(q('Who benefited most from your work?','', chipGroup('beneficiary',['Students / learners','Patients / clients','The nxT team','A partner organization','The community','Future interns'], true)));
   c.appendChild(q('A moment you\'ll actually remember','A win, a save, a funny disaster that taught you something.', textArea('moment','Tell the story…')));
@@ -577,20 +598,36 @@ screens.push(()=>{
 screens.push(()=>{
   const m5 = S.month || 6;
   const final = m5 === 6;
+  const head5 = {
+    1:'Setting up month 2',
+    2:'Setting up month 3',
+    3:'Leveling up: the paid phase',
+    4:'Setting up month 5',
+    5:'Setting up the finale',
+    6:'What happens next?'
+  }[m5];
+  const sub5 = {
+    1:'One month in — tell us what would make month 2 land even better. Then your archetype awaits.',
+    2:'One more month of the learning phase to go. Point it in the right direction — then your archetype awaits.',
+    3:'Next month you go paid — real stakes, real money. A few answers to start it right, then your archetype awaits.',
+    4:'You\'re paid now, and the bar keeps rising. Shape month 5 — then your archetype awaits.',
+    5:'One month left. Make the finale count — then your archetype awaits.',
+    6:'The internship can lead to part-time or full-time roles. Last honest answers — then your archetype awaits.'
+  }[m5];
   const s = el(`<section class="screen">
     <span class="chapter-tag">${I('star',14)} Chapter 5 · ${final?'New game +':'Next level'}</span>
-    <h2>${I('star',24)} ${final?'What happens next?':'Setting up month '+(m5+1)}</h2>
-    <p class="sub">${final
-      ? 'The internship can lead to part-time or full-time roles. Last honest answers — then your archetype awaits.'
-      : 'Almost done — a few answers to make next month even better, then your archetype awaits.'}</p>
+    <h2>${I('star',24)} ${head5}</h2>
+    <p class="sub">${sub5}</p>
     <div class="card" id="c5"></div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" id="finish">Finish &amp; reveal my archetype ${I('gift',18)}</button></div>
   </section>`);
   const c = s.querySelector('#c5');
   if(final) c.appendChild(q('Would you want to keep going with nxT?','', chipGroup('continue',['Full-time, sign me up','Part-time works for me','Freelance / per-project','Maybe later — keep in touch','This chapter is complete for me'], false, 20), false));
   if(!final){
-    c.appendChild(q('What do you want more of next month?','Tap all that apply.', chipGroup('wantMore',['More real projects','More mentoring time','More feedback','More workshops & training','More client / partner exposure','More creative freedom','More technical challenges','More team time'], true, 20), false));
-    c.appendChild(q(`Your #1 goal for month ${m5+1}`,'One thing you want to be true by the next debrief.', textInput('nextGoal','e.g. Ship my first feature end-to-end without hand-holding')));
+    c.appendChild(q(m5===3?'What do you want more of in the paid phase?':'What do you want more of next month?','Tap all that apply.', chipGroup('wantMore',['More real projects','More mentoring time','More feedback','More workshops & training','More client / partner exposure','More creative freedom','More technical challenges','More team time'], true, 20), false));
+    c.appendChild(q(m5===3?'Your #1 goal for the paid phase':`Your #1 goal for month ${m5+1}`,'One thing you want to be true by the next debrief.', textInput('nextGoal', m5===3?'e.g. Own a real project end-to-end now that it counts':'e.g. Ship my first feature end-to-end without hand-holding')));
+    if(m5===3) c.appendChild(q('Anything on your mind about going paid?','Worries, questions, expectations — say it now so month 4 starts right.', textArea('transitionNotes','e.g. I want to make sure my hours fit around classes…')));
+    if(m5===5) c.appendChild(q('Starting to think about life after the internship?','No pressure — this just helps nxT plan ahead.', chipGroup('continue',['Full-time, sign me up','Part-time works for me','Freelance / per-project','Maybe later — keep in touch','Too early to tell'], false, 20)));
   }
   c.appendChild(q('How likely are you to recommend this internship to a friend?','', (()=>{
     const w = document.createElement('div');
@@ -628,8 +665,8 @@ screens.push(()=>{
   const s = el(`<section class="screen">
     <div class="hero">
       <span class="big-icon">${I(S.avatar || 'trophy', 64)}</span>
-      <h1>${m6===6?'Mission complete':'Month '+m6+' complete'}${S.name ? ', ' + S.name.split(' ')[0] : ''}!</h1>
-      <p class="sub">${m6===6?'Six months.':'Level '+m6+' of 6 cleared.'} ${nProj || 'Your'} project${nProj===1?'':'s'} showcased. ${growth>0? '+'+growth+' total skill points of growth.' : 'A whole lot of growth.'}${m6<6?' See you at the month '+(m6+1)+' debrief.':''}</p>
+      <h1>${m6===6?'Mission complete':m6===3?'Learning phase complete':'Month '+m6+' complete'}${S.name ? ', ' + S.name.split(' ')[0] : ''}!</h1>
+      <p class="sub">${m6===6?'Six months.':m6===3?'Levels 1–3 cleared — you\'ve unlocked the paid phase '+I('briefcase',15)+'.':'Level '+m6+' of 6 cleared.'} ${nProj || 'Your'} project${nProj===1?'':'s'} showcased. ${growth>0? '+'+growth+' total skill points of growth.' : 'A whole lot of growth.'}${m6<6?' See you at the month '+(m6+1)+' debrief.':''}</p>
     </div>
     <div class="archetype">
       <span class="a-icon">${I(arch[0], 52)}</span>
@@ -707,13 +744,13 @@ async function submit(){
   const payload = {
     month:S.month||null, phase:S.month ? (S.month<=3?'learning':'paid') : null,
     name:S.name||null, email:S.email||null, avatar:S.avatar||null, cohort:S.cohort||null,
-    areas:S.areas||[], favoriteArea:S.favoriteArea||null, mission:S.mission||null,
+    areas:S.areas||[], favoriteArea:S.favoriteArea||null, mission:S.mission||null, surprise:S.surprise||null,
     ratings:S.ratings, skills:S.skills||[], unlocked:S.unlocked||null,
     projects:S.projects.filter(p=>p.title||p.what), skillsThenNow:S.skillsThenNow,
     contribution:S.contribution||null, metric:S.metric||null, beneficiary:S.beneficiary||[],
     moment:S.moment||null, continueInterest:S.continue||null, nps:S.nps??null,
     keep:S.keep||null, fix:S.fix||null, advice:S.advice||null,
-    wantMore:S.wantMore||[], nextGoal:S.nextGoal||null,
+    wantMore:S.wantMore||[], nextGoal:S.nextGoal||null, transitionNotes:S.transitionNotes||null,
     testimonial:S.testimonial||null, testimonialOk:!!S.testimonialOk,
     xp, badges:[...badges], archetype:pickArchetype()[1]
   };

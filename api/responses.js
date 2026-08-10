@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     responses.sort((a, b) => (a.submittedAt || '').localeCompare(b.submittedAt || ''));
 
     if (req.query.format === 'csv') {
-      const cols = ['submittedAt','month','phase','name','email','cohort','areas','favoriteArea','mission','skills','unlocked','contribution','metric','beneficiary','moment','continueInterest','nps','keep','fix','wantMore','nextGoal','advice','testimonial','testimonialOk','archetype','xp'];
+      const cols = ['submittedAt','month','phase','name','email','cohort','areas','favoriteArea','mission','surprise','skills','unlocked','contribution','metric','beneficiary','moment','continueInterest','nps','keep','fix','wantMore','nextGoal','transitionNotes','advice','testimonial','testimonialOk','archetype','xp'];
       const ratingKeys = [...new Set(responses.flatMap((r) => Object.keys(r.ratings || {})))];
       const esc = (v) => {
         if (v == null) return '';
