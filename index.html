@@ -124,6 +124,15 @@ input[type=range]{flex:1;accent-color:#7c3aed;height:22px}
   border-radius:14px;width:54px;height:54px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
 .avatars button:hover{transform:scale(1.1);border-color:var(--accent)}
 .avatars button.on{border-color:var(--green);background:#ecfdf5;color:var(--green);transform:scale(1.12)}
+/* month / level select */
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.levels button{background:#fff;border:1px solid #cbd5e1;border-radius:14px;padding:10px 6px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center}
+.levels button b{display:block;font-family:'Space Grotesk';font-size:.9rem;color:var(--txt)}
+.levels button small{font-size:.66rem;color:var(--muted)}
+.levels button:hover{border-color:var(--accent);transform:translateY(-2px)}
+.levels button.on{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
+.levels button.on b{color:#075985}
+@media(max-width:420px){.levels{grid-template-columns:repeat(2,1fr)}}
 /* toast */
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);z-index:99;
   background:#fff;border:1px solid var(--card-br);border-radius:16px;padding:12px 20px;
@@ -274,18 +283,25 @@ function awardBadge(id, iconName, name){
 const AREAS = ['Education (BuildED · Edu 4.0)','Health & Clinical','Community Impact','Product & Engineering','Data & AI','Media & Design','Operations','Hospitality & Local Business','Other'];
 const AVATARS = ['rocket','lightbulb','palette','wrench','sprout','zap','target','flask','globe','gamepad','radio','bot'];
 const FACES = [['angry','Rough','#dc2626'],['frown','Meh','#ea580c'],['meh','Okay','#d97706'],['smile','Good','#16a34a'],['laugh','Amazing','#059669']];
-const RATINGS_P1 = [
-  ['onboarding','Onboarding & welcome','How clear was your first week — goals, people, tools?'],
-  ['mentorship1','Mentorship & guidance','Did someone actually invest in your growth?'],
-  ['learning1','Learning opportunities','Workshops, shadowing, real skills — not busywork'],
-  ['fairness','Value of the unpaid phase','Did the first 3 months feel like a fair trade — real learning for your time?']
-];
-const RATINGS_P2 = [
-  ['transition','The step up to paid','Was the path from unpaid → paid clear and earned?'],
-  ['responsibility','Real responsibility','Did you own real work that mattered?'],
-  ['feedback','Feedback & check-ins','Did you know how you were doing, often enough?'],
-  ['growth2','Growth & challenge','Were you stretched in a good way?']
-];
+const R = {
+  onboarding:['onboarding','Onboarding & welcome','How clear was your first weeks — goals, people, tools?'],
+  mentorship:['mentorship','Mentorship & guidance','Did someone actually invest in your growth this month?'],
+  learning:['learning','Learning opportunities','Workshops, shadowing, real skills — not busywork'],
+  fairness:['fairness','Value of the unpaid phase','Did these 3 months feel like a fair trade — real learning for your time?'],
+  ready:['ready','Ready to level up','Do you feel prepared to step into the paid phase?'],
+  transition:['transition','The step up to paid','Was the move from unpaid → paid clear and earned?'],
+  responsibility:['responsibility','Real responsibility','Did you own real work that mattered this month?'],
+  feedback:['feedback','Feedback & check-ins','Did you know how you were doing, often enough?'],
+  growth:['growth','Growth & challenge','Were you stretched in a good way?']
+};
+function phaseItems(m){
+  if(m===1) return [R.onboarding, R.mentorship, R.learning];
+  if(m===2) return [R.mentorship, R.learning, R.growth];
+  if(m===3) return [R.mentorship, R.learning, R.fairness, R.ready];
+  if(m===4) return [R.transition, R.responsibility, R.feedback];
+  if(m===5) return [R.responsibility, R.feedback, R.growth];
+  return [R.transition, R.responsibility, R.feedback, R.growth];
+}
 const RATINGS_OVERALL = [
   ['culture','Team culture & belonging','Did you feel like part of the crew?'],
   ['tools','Tools & resources','Did you have what you needed to do great work?'],
@@ -378,8 +394,8 @@ screens.push(()=>{
   const s = el(`<section class="screen">
     <div class="hero">
       <span class="big-emoji">🎮</span>
-      <h1>You finished the mission.<br>Now tell the story.</h1>
-      <p class="sub">Six months at <b style="color:var(--txt)">nxT Innovation Lab</b> — from first-day rookie to shipping real work. This debrief is part feedback, part <b style="color:var(--txt)">victory lap</b>: rate the journey, show off what you built, and unlock your intern archetype.</p>
+      <h1>Level complete.<br>Now tell the story.</h1>
+      <p class="sub">Every month at <b style="color:var(--txt)">nxT Innovation Lab</b> is a level — 3 in the learning phase, 3 in the paid phase. This debrief is part feedback, part <b style="color:var(--txt)">victory lap</b>: pick the month you just finished, rate it, show off what you built, and unlock your intern archetype.</p>
       <div class="pill-row">
         <span class="pill">${I('clock',14)} ~7 minutes</span><span class="pill">${I('save',14)} Auto-saves as you go</span><span class="pill">${I('medal',14)} 6 badges to earn</span><span class="pill">${I('eyeoff',14)} Anonymous mode available</span>
       </div>
@@ -388,6 +404,15 @@ screens.push(()=>{
     <div class="nav-row"><span></span><button class="btn btn-primary" id="start">Start the debrief →</button></div>
   </section>`);
   const c = s.querySelector('#c0');
+  c.appendChild(q('Which month did you just finish?','This tunes every question to where you are in the journey.', (()=>{
+    const g = el(`<div class="levels"></div>`);
+    for(let m=1;m<=6;m++){
+      const b = el(`<button type="button" class="${S.month===m?'on':''}"><b>Month ${m}</b><small>${m<=3?'Learning phase':'Paid phase'}${m===6?' · Finale':''}</small></button>`);
+      b.onclick = ()=>{ g.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S.month=m; gain('month',15); save(); };
+      g.appendChild(b);
+    }
+    return g;
+  })(), false));
   c.appendChild(q('Pick your player avatar','', (()=> {
     const a = el(`<div class="avatars"></div>`);
     AVATARS.forEach(av=>{
@@ -400,7 +425,10 @@ screens.push(()=>{
   c.appendChild(q('Your name','Or leave blank to go full anonymous — feedback counts either way.', textInput('name','e.g. Alex Rivera')));
   c.appendChild(q('Email','Only if you want us to follow up about part-time / full-time opportunities.', textInput('email','you@example.com','email')));
   c.appendChild(q('When did your internship start?','', (()=>{ const i=textInput('cohort','','month'); return i; })()));
-  s.querySelector('#start').onclick = ()=>{ awardBadge('b0','clapper','Origin Story'); go(1); };
+  s.querySelector('#start').onclick = ()=>{
+    if(!S.month){ toast('map','Pick your month first','Select which month you just finished so we can tune your debrief.'); return; }
+    awardBadge('b0','clapper','Origin Story'); go(1);
+  };
   return s;
 });
 
@@ -413,35 +441,35 @@ screens.push(()=>{
     <div class="card" id="c1"></div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
   </section>`);
+  const m1 = S.month || 6;
   const c = s.querySelector('#c1');
-  c.appendChild(q('Which areas did you work in?','Tap all that apply — Education first, then wherever the mission took you.', chipGroup('areas', AREAS, true, 20), false));
-  c.appendChild(q('Which area was your favorite?','', chipGroup('favoriteArea', AREAS, false)));
-  c.appendChild(q('In one sentence: what was your mission at nxT?','The elevator-pitch version of what you worked on.', textArea('mission','e.g. I helped build interactive learning tools for the Edu 4.0 platform, then moved into health workflows…')));
+  c.appendChild(q(m1===6?'Which areas did you work in across the internship?':`Which areas did you work in during month ${m1}?`,'Tap all that apply — Education first, then wherever the mission took you.', chipGroup('areas', AREAS, true, 20), false));
+  c.appendChild(q('Which area was your favorite so far?','', chipGroup('favoriteArea', AREAS, false)));
+  c.appendChild(q(m1===6?'In one sentence: what was your mission at nxT?':`In one sentence: what was your mission this month?`,'The elevator-pitch version of what you worked on.', textArea('mission','e.g. I helped build interactive learning tools for the Edu 4.0 platform, then moved into health workflows…')));
   return s;
 });
 
-/* --- 2 · The two phases --- */
+/* --- 2 · Month ratings --- */
 screens.push(()=>{
+  const m = S.month || 6;
+  const learning = m <= 3;
   const s = el(`<section class="screen">
-    <span class="chapter-tag">${I('swords',14)} Chapter 2 · Level 1 vs Level 2</span>
-    <h2>${I('swords',24)} The two phases</h2>
-    <p class="sub">Months 1–3 were the unpaid learning phase. Months 4–6 were paid, with real stakes. Rate each phase honestly — this is where your feedback changes the program.</p>
+    <span class="chapter-tag">${I('swords',14)} Chapter 2 · Month ${m} ratings</span>
+    <h2>${I('swords',24)} Month ${m} check-in</h2>
+    <p class="sub">${learning
+      ? `You're in the learning phase (months 1–3). Rate month ${m} honestly — your feedback tunes the program while you're still in it.`
+      : `You're in the paid phase (months 4–6). Real stakes, real work — rate month ${m} honestly. This goes straight to the people who can change things.`}</p>
     <div class="card">
-      <h3>${I('sprout',18)} Phase 1 — Months 1–3 (learning phase)</h3>
+      <h3>${I(learning?'sprout':'briefcase',18)} ${learning?'The learning phase':'The paid phase'} — month ${m}</h3>
       <div id="p1"></div>
     </div>
     <div class="card">
-      <h3>${I('briefcase',18)} Phase 2 — Months 4–6 (paid phase)</h3>
-      <div id="p2"></div>
-    </div>
-    <div class="card">
-      <h3>${I('thermometer',18)} The whole experience</h3>
+      <h3>${I('thermometer',18)} The month overall</h3>
       <div id="pAll"></div>
     </div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
   </section>`);
-  s.querySelector('#p1').appendChild(ratingBlock(RATINGS_P1));
-  s.querySelector('#p2').appendChild(ratingBlock(RATINGS_P2));
+  s.querySelector('#p1').appendChild(ratingBlock(phaseItems(m)));
   s.querySelector('#pAll').appendChild(ratingBlock(RATINGS_OVERALL));
   return s;
 });
@@ -455,7 +483,7 @@ screens.push(()=>{
     <div class="card" id="c3a"></div>
     <div class="card">
       <h3>${I('wrench',18)} Your project showcase</h3>
-      <p class="sub" style="margin-bottom:10px">Add the things you built, shipped, or contributed to. Links to demos, repos, videos, or designs make it real.</p>
+      <p class="sub" style="margin-bottom:10px">Add the things you built, shipped, or contributed to <span class="mo-scope">this month</span>. Links to demos, repos, videos, or designs make it real.</p>
       <div id="proj-list"></div>
       <button class="add-btn" id="add-proj">＋ Add a project</button>
     </div>
@@ -466,9 +494,11 @@ screens.push(()=>{
     </div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
   </section>`);
+  const m3 = S.month || 6;
+  s.querySelector('.mo-scope').textContent = m3===6 ? 'during your internship' : 'this month';
   const c3a = s.querySelector('#c3a');
-  c3a.appendChild(q('Top skills you leveled up','Pick up to 5 — these feed your intern archetype at the end.', chipGroup('skills', SKILL_CHIPS, true, 20), false));
-  c3a.appendChild(q('What is something you can do now that felt impossible 6 months ago?','', textArea('unlocked','e.g. I can take a rough idea and turn it into a working prototype in a week…')));
+  c3a.appendChild(q(m3===6?'Top skills you leveled up':'Top skills you leveled up this month','Pick up to 5 — these feed your intern archetype at the end.', chipGroup('skills', SKILL_CHIPS, true, 20), false));
+  c3a.appendChild(q('What is something you can do now that felt impossible when you started?','', textArea('unlocked','e.g. I can take a rough idea and turn it into a working prototype in a week…')));
 
   /* projects */
   const list = s.querySelector('#proj-list');
@@ -534,8 +564,9 @@ screens.push(()=>{
     <div class="card" id="c4"></div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Final chapter →</button></div>
   </section>`);
+  const m4 = S.month || 6;
   const c = s.querySelector('#c4');
-  c.appendChild(q('Your single biggest contribution','If you could point at one thing and say "I did that" — what is it?', textArea('contribution','e.g. The onboarding flow I redesigned is now used for every new student…')));
+  c.appendChild(q(m4===6?'Your single biggest contribution of the internship':'Your biggest contribution this month','If you could point at one thing and say "I did that" — what is it?', textArea('contribution','e.g. The onboarding flow I redesigned is now used for every new student…')));
   c.appendChild(q('Can you put a number on it?','People reached, hours saved, features shipped, students taught — any metric counts.', textInput('metric','e.g. 120 students used the tool · 3 features shipped · cut setup time by half')));
   c.appendChild(q('Who benefited most from your work?','', chipGroup('beneficiary',['Students / learners','Patients / clients','The nxT team','A partner organization','The community','Future interns'], true)));
   c.appendChild(q('A moment you\'ll actually remember','A win, a save, a funny disaster that taught you something.', textArea('moment','Tell the story…')));
@@ -544,15 +575,23 @@ screens.push(()=>{
 
 /* --- 5 · What's next --- */
 screens.push(()=>{
+  const m5 = S.month || 6;
+  const final = m5 === 6;
   const s = el(`<section class="screen">
-    <span class="chapter-tag">${I('star',14)} Chapter 5 · New game +</span>
-    <h2>${I('star',24)} What happens next?</h2>
-    <p class="sub">The internship can lead to part-time or full-time roles. Last honest answers — then your archetype awaits.</p>
+    <span class="chapter-tag">${I('star',14)} Chapter 5 · ${final?'New game +':'Next level'}</span>
+    <h2>${I('star',24)} ${final?'What happens next?':'Setting up month '+(m5+1)}</h2>
+    <p class="sub">${final
+      ? 'The internship can lead to part-time or full-time roles. Last honest answers — then your archetype awaits.'
+      : 'Almost done — a few answers to make next month even better, then your archetype awaits.'}</p>
     <div class="card" id="c5"></div>
     <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" id="finish">Finish &amp; reveal my archetype ${I('gift',18)}</button></div>
   </section>`);
   const c = s.querySelector('#c5');
-  c.appendChild(q('Would you want to keep going with nxT?','', chipGroup('continue',['Full-time, sign me up','Part-time works for me','Freelance / per-project','Maybe later — keep in touch','This chapter is complete for me'], false, 20), false));
+  if(final) c.appendChild(q('Would you want to keep going with nxT?','', chipGroup('continue',['Full-time, sign me up','Part-time works for me','Freelance / per-project','Maybe later — keep in touch','This chapter is complete for me'], false, 20), false));
+  if(!final){
+    c.appendChild(q('What do you want more of next month?','Tap all that apply.', chipGroup('wantMore',['More real projects','More mentoring time','More feedback','More workshops & training','More client / partner exposure','More creative freedom','More technical challenges','More team time'], true, 20), false));
+    c.appendChild(q(`Your #1 goal for month ${m5+1}`,'One thing you want to be true by the next debrief.', textInput('nextGoal','e.g. Ship my first feature end-to-end without hand-holding')));
+  }
   c.appendChild(q('How likely are you to recommend this internship to a friend?','', (()=>{
     const w = document.createElement('div');
     const n = el(`<div class="nps"></div>`);
@@ -565,15 +604,17 @@ screens.push(()=>{
     w.appendChild(el(`<div class="nps-legend"><span>Not a chance</span><span>Take my friends</span></div>`));
     return w;
   })(), false));
-  c.appendChild(q('One thing nxT should <b>keep doing</b>','', textArea('keep','The thing that worked — don\'t let them change it.')));
+  c.appendChild(q('One thing nxT should <b>keep doing</b>','', textArea('keep','The thing that worked this month — don\'t let them change it.')));
   c.appendChild(q('One thing nxT should <b>fix or change</b>','Be blunt. This goes straight to the people who can change it.', textArea('fix','If you ran the program, what would you do differently?')));
-  c.appendChild(q('Your advice to the next intern','One sentence they\'ll read on their first day.', textInput('advice','e.g. Ask the "dumb" question on day one — it saves you a month.')));
-  c.appendChild(q('A testimonial we could share','', textArea('testimonial','A few words about your experience, in your voice…')));
-  c.appendChild((()=>{
-    const l = el(`<label class="checkbox-line"><input type="checkbox" ${S.testimonialOk?'checked':''}><span>You can share my testimonial (and first name, if I gave it) publicly — website, social, recruiting.</span></label>`);
-    l.querySelector('input').onchange = e=>{ S.testimonialOk = e.target.checked; save(); };
-    return l;
-  })());
+  if(final){
+    c.appendChild(q('Your advice to the next intern','One sentence they\'ll read on their first day.', textInput('advice','e.g. Ask the "dumb" question on day one — it saves you a month.')));
+    c.appendChild(q('A testimonial we could share','', textArea('testimonial','A few words about your experience, in your voice…')));
+    c.appendChild((()=>{
+      const l = el(`<label class="checkbox-line"><input type="checkbox" ${S.testimonialOk?'checked':''}><span>You can share my testimonial (and first name, if I gave it) publicly — website, social, recruiting.</span></label>`);
+      l.querySelector('input').onchange = e=>{ S.testimonialOk = e.target.checked; save(); };
+      return l;
+    })());
+  }
   s.querySelector('#finish').onclick = finish;
   return s;
 });
@@ -583,11 +624,12 @@ screens.push(()=>{
   const arch = pickArchetype();
   const growth = totalGrowth();
   const nProj = S.projects.filter(p=>p.title).length;
+  const m6 = S.month || 6;
   const s = el(`<section class="screen">
     <div class="hero">
       <span class="big-icon">${I(S.avatar || 'trophy', 64)}</span>
-      <h1>Mission complete${S.name ? ', ' + S.name.split(' ')[0] : ''}!</h1>
-      <p class="sub">Six months. ${nProj || 'Your'} project${nProj===1?'':'s'} showcased. ${growth>0? '+'+growth+' total skill points of growth.' : 'A whole lot of growth.'}</p>
+      <h1>${m6===6?'Mission complete':'Month '+m6+' complete'}${S.name ? ', ' + S.name.split(' ')[0] : ''}!</h1>
+      <p class="sub">${m6===6?'Six months.':'Level '+m6+' of 6 cleared.'} ${nProj || 'Your'} project${nProj===1?'':'s'} showcased. ${growth>0? '+'+growth+' total skill points of growth.' : 'A whole lot of growth.'}${m6<6?' See you at the month '+(m6+1)+' debrief.':''}</p>
     </div>
     <div class="archetype">
       <span class="a-icon">${I(arch[0], 52)}</span>
@@ -663,6 +705,7 @@ async function submit(){
   const err = document.getElementById('err');
   btn.disabled = true; btn.textContent = 'Transmitting…';
   const payload = {
+    month:S.month||null, phase:S.month ? (S.month<=3?'learning':'paid') : null,
     name:S.name||null, email:S.email||null, avatar:S.avatar||null, cohort:S.cohort||null,
     areas:S.areas||[], favoriteArea:S.favoriteArea||null, mission:S.mission||null,
     ratings:S.ratings, skills:S.skills||[], unlocked:S.unlocked||null,
@@ -670,6 +713,7 @@ async function submit(){
     contribution:S.contribution||null, metric:S.metric||null, beneficiary:S.beneficiary||[],
     moment:S.moment||null, continueInterest:S.continue||null, nps:S.nps??null,
     keep:S.keep||null, fix:S.fix||null, advice:S.advice||null,
+    wantMore:S.wantMore||[], nextGoal:S.nextGoal||null,
     testimonial:S.testimonial||null, testimonialOk:!!S.testimonialOk,
     xp, badges:[...badges], archetype:pickArchetype()[1]
   };
