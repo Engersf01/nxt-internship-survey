@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Debrief · nxT Innovation Lab</title>
+<meta name="description" content="Post-internship mission debrief for nxT Innovation Lab — rate your journey, show off what you built, and unlock your intern archetype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020;--bg2:#111a33;--card:rgba(255,255,255,.055);--card-br:rgba(255,255,255,.12);
+  --txt:#eef2ff;--muted:#9aa7c7;--accent:#6ee7ff;--accent2:#a78bfa;--lime:#bef264;--pink:#f472b6;
+  --grad:linear-gradient(90deg,#6ee7ff,#a78bfa,#f472b6);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);
+  min-height:100vh;line-height:1.55;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(110,231,255,.14),transparent),
+                   radial-gradient(700px 500px at -10% 30%,rgba(167,139,250,.14),transparent),
+                   radial-gradient(800px 600px at 50% 110%,rgba(244,114,182,.10),transparent);
+  background-attachment:fixed;
+}
+h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:20px 18px 90px}
+/* ---------- HUD ---------- */
+.hud{position:sticky;top:0;z-index:50;background:rgba(11,16,32,.82);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.07);padding:10px 18px}
+.hud-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{font-weight:700;font-size:.95rem;letter-spacing:.02em;white-space:nowrap}
+.brand span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+.bar i{display:block;height:100%;width:0%;background:var(--grad);border-radius:99px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+.xp{font-family:'Space Grotesk';font-weight:700;font-size:.85rem;color:var(--lime);white-space:nowrap;min-width:74px;text-align:right}
+.lvl{font-size:.7rem;color:var(--muted);display:block;text-align:right;margin-top:-2px}
+/* ---------- Cards / screens ---------- */
+.screen{display:none;animation:pop .45s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--card-br);border-radius:var(--radius);padding:22px;margin:16px 0}
+.chapter-tag{display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk';font-size:.75rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:rgba(110,231,255,.1);
+  border:1px solid rgba(110,231,255,.25);padding:5px 12px;border-radius:99px;margin-bottom:12px}
+h1{font-size:2rem;line-height:1.15;margin-bottom:10px}
+h2{font-size:1.45rem;line-height:1.2;margin-bottom:6px}
+h3{font-size:1.02rem;margin-bottom:6px}
+.sub{color:var(--muted);font-size:.95rem}
+.q{margin:22px 0}
+.q-label{font-weight:600;margin-bottom:4px;display:block}
+.q-hint{font-size:.82rem;color:var(--muted);margin-bottom:10px;display:block}
+.optional{font-size:.7rem;color:var(--muted);font-weight:500;border:1px solid rgba(255,255,255,.15);border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+/* ---------- Inputs ---------- */
+input[type=text],input[type=email],input[type=url],input[type=month],textarea,select{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--txt);
+  border-radius:12px;padding:12px 14px;font-size:.95rem;font-family:inherit;outline:none;transition:border .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{min-height:88px;resize:vertical}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239aa7c7' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+::placeholder{color:#5f6b8a}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:var(--txt);
+  border-radius:99px;padding:8px 14px;font-size:.87rem;cursor:pointer;transition:all .15s;font-family:inherit;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:rgba(110,231,255,.16);border-color:var(--accent);color:var(--accent);font-weight:600}
+/* emoji scale */
+.emoji-row{display:flex;gap:6px;justify-content:space-between}
+.emoji-btn{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:14px;
+  padding:10px 0 6px;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.emoji-btn .e{font-size:1.55rem;display:block;filter:grayscale(.9);transition:all .15s}
+.emoji-btn small{font-size:.62rem;color:var(--muted)}
+.emoji-btn:hover .e{filter:none;transform:scale(1.15)}
+.emoji-btn.on{background:rgba(167,139,250,.18);border-color:var(--accent2)}
+.emoji-btn.on .e{filter:none;transform:scale(1.2)}
+/* rating grid rows */
+.rate-row{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.rate-row:last-child{border-bottom:none}
+.rate-row .rlabel{font-weight:600;font-size:.93rem;margin-bottom:2px}
+.rate-row .rdesc{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+/* nps */
+.nps{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
+.nps button{aspect-ratio:1;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);
+  color:var(--txt);font-family:'Space Grotesk';font-weight:700;font-size:.9rem;cursor:pointer;transition:all .15s}
+.nps button:hover{border-color:var(--accent)}
+.nps button.on{background:var(--grad);color:#0b1020;border-color:transparent;transform:scale(1.12)}
+.nps-legend{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:6px}
+/* sliders (then vs now) */
+.slider-pair{margin:16px 0}
+.slider-pair .sp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.slider-pair .sp-head b{font-size:.92rem}
+.slider-line{display:flex;align-items:center;gap:10px;margin:6px 0}
+.slider-line label{font-size:.75rem;color:var(--muted);width:52px;flex-shrink:0}
+.slider-line output{font-family:'Space Grotesk';font-weight:700;width:26px;text-align:center;color:var(--lime)}
+input[type=range]{flex:1;accent-color:#a78bfa;height:22px}
+.delta{font-size:.75rem;color:var(--lime);font-weight:600}
+/* project cards */
+.proj{border:1px dashed rgba(255,255,255,.25);border-radius:14px;padding:16px;margin:12px 0;position:relative}
+.proj .del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem}
+.proj .del:hover{color:var(--pink)}
+.proj input,.proj textarea{margin-bottom:10px}
+.add-btn{width:100%;padding:13px;border-radius:14px;border:1px dashed rgba(255,255,255,.3);background:transparent;
+  color:var(--accent);font-weight:600;font-size:.92rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.add-btn:hover{border-color:var(--accent);background:rgba(110,231,255,.07)}
+/* buttons / nav */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:14px;
+  padding:14px 26px;font-family:'Space Grotesk';font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--grad);color:#0b1020}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(110,231,255,.35)}
+.btn-ghost{background:rgba(255,255,255,.07);color:var(--muted);border:1px solid rgba(255,255,255,.12)}
+.btn-ghost:hover{color:var(--txt)}
+.nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+/* avatar picker */
+.avatars{display:flex;flex-wrap:wrap;gap:8px}
+.avatars button{font-size:1.6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;width:54px;height:54px;cursor:pointer;transition:all .15s}
+.avatars button:hover{transform:scale(1.1)}
+.avatars button.on{border-color:var(--lime);background:rgba(190,242,100,.14);transform:scale(1.12)}
+/* toast */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);z-index:99;
+  background:#141d3a;border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px 20px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast .t-emoji{font-size:1.7rem}
+#toast b{display:block;font-family:'Space Grotesk';font-size:.9rem}
+#toast small{color:var(--muted);font-size:.78rem}
+/* hero / finale */
+.hero{text-align:center;padding:34px 10px 10px}
+.hero .big-emoji{font-size:3.6rem;display:block;margin-bottom:12px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.pill-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.pill{font-size:.78rem;border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:5px 12px;color:var(--muted)}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px;margin:18px 0}
+.badge{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 6px;text-align:center}
+.badge .be{font-size:1.7rem;display:block;filter:grayscale(1);opacity:.35}
+.badge.won .be{filter:none;opacity:1}
+.badge small{font-size:.64rem;color:var(--muted);display:block;margin-top:4px}
+.badge.won small{color:var(--txt)}
+.archetype{background:linear-gradient(135deg,rgba(110,231,255,.12),rgba(167,139,250,.12),rgba(244,114,182,.1));
+  border:1px solid rgba(167,139,250,.4);border-radius:20px;padding:26px;text-align:center;margin:18px 0}
+.archetype .a-emoji{font-size:3rem;display:block;margin-bottom:8px}
+.archetype h3{font-size:1.4rem;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:98}
+.error-note{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.35);border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:14px;display:none}
+.checkbox-line{display:flex;gap:10px;align-items:flex-start;font-size:.87rem;color:var(--muted);margin-top:10px;cursor:pointer}
+.checkbox-line input{width:18px;height:18px;margin-top:2px;accent-color:#6ee7ff;flex-shrink:0}
+@media(max-width:520px){
+  h1{font-size:1.6rem}
+  .emoji-btn .e{font-size:1.25rem}
+  .nps button{font-size:.75rem;border-radius:8px}
+  .card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="hud-inner">
+    <div class="brand">nxT <span>Mission Debrief</span></div>
+    <div class="bar"><i id="bar-fill"></i></div>
+    <div>
+      <div class="xp" id="xp">0 XP</div>
+      <span class="lvl" id="lvl">Explorer</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<div id="toast"><span class="t-emoji" id="toast-emoji">🏅</span><div><b id="toast-title"></b><small id="toast-sub"></small></div></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* ================= STATE ================= */
+const S = JSON.parse(localStorage.getItem('nxt-debrief') || '{}');
+S.projects = S.projects || [];
+S.ratings = S.ratings || {};
+S.skillsThenNow = S.skillsThenNow || {};
+let xp = S._xp || 0, screenIdx = S._screen || 0;
+const answered = new Set(S._answered || []);
+const badges = new Set(S._badges || []);
+
+const LEVELS = [[0,'Explorer'],[80,'Builder'],[180,'Creator'],[300,'Innovator'],[430,'Trailblazer'],[560,'nxT Legend']];
+const TOTAL_XP_EST = 640;
+
+function save(){
+  S._xp = xp; S._screen = screenIdx; S._answered = [...answered]; S._badges = [...badges];
+  localStorage.setItem('nxt-debrief', JSON.stringify(S));
+}
+function gain(key, amount){
+  if(answered.has(key)) return;
+  answered.add(key); xp += amount; renderHUD(); save();
+}
+function renderHUD(){
+  document.getElementById('xp').textContent = xp + ' XP';
+  document.getElementById('bar-fill').style.width = Math.min(100, xp/TOTAL_XP_EST*100) + '%';
+  let name = LEVELS[0][1];
+  for(const [min,n] of LEVELS) if(xp >= min) name = n;
+  const el = document.getElementById('lvl');
+  if(el.textContent !== name && xp > 0){ el.textContent = name; toast('⬆️','Level up!','You are now: ' + name); }
+  else el.textContent = name;
+}
+let toastTimer;
+function toast(emoji, title, sub){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-emoji').textContent = emoji;
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function awardBadge(id, emoji, name){
+  if(badges.has(id)) return;
+  badges.add(id); toast(emoji, 'Badge unlocked: ' + name, 'Added to your trophy shelf'); save();
+}
+
+/* ================= CONTENT CONFIG ================= */
+const AREAS = ['Education (BuildED · Edu 4.0)','Health & Clinical','Community Impact','Product & Engineering','Data & AI','Media & Design','Operations','Hospitality & Local Business','Other'];
+const AVATARS = ['🚀','🧠','🎨','🛠️','🌱','⚡','🎯','🧪','🌍','🎮','📡','🦾'];
+const EMOJIS = [['😖','Rough'],['😕','Meh'],['😐','Okay'],['🙂','Good'],['🤩','Amazing']];
+const RATINGS_P1 = [
+  ['onboarding','Onboarding & welcome','How clear was your first week — goals, people, tools?'],
+  ['mentorship1','Mentorship & guidance','Did someone actually invest in your growth?'],
+  ['learning1','Learning opportunities','Workshops, shadowing, real skills — not busywork'],
+  ['fairness','Value of the unpaid phase','Did the first 3 months feel like a fair trade — real learning for your time?']
+];
+const RATINGS_P2 = [
+  ['transition','The step up to paid','Was the path from unpaid → paid clear and earned?'],
+  ['responsibility','Real responsibility','Did you own real work that mattered?'],
+  ['feedback','Feedback & check-ins','Did you know how you were doing, often enough?'],
+  ['growth2','Growth & challenge','Were you stretched in a good way?']
+];
+const RATINGS_OVERALL = [
+  ['culture','Team culture & belonging','Did you feel like part of the crew?'],
+  ['tools','Tools & resources','Did you have what you needed to do great work?'],
+  ['communication','Communication','Clarity from leads, expectations, changes'],
+  ['balance','Workload & balance','Sustainable pace vs. burnout territory']
+];
+const SKILLS = ['Communication','Technical / coding','Design & creativity','Problem-solving','Confidence','Working with a team'];
+const SKILL_CHIPS = ['AI & prompt engineering','Web / app development','Data analysis','UX / UI design','Video & media','Teaching & facilitation','Project management','Research','Community outreach','Sales & pitching','Healthcare workflows','No-code tools','Public speaking','Entrepreneurship'];
+const ARCHETYPES = {
+  build:['🛠️','The Architect','You turn ideas into working things. Builders like you are why prototypes become products.'],
+  create:['🎨','The Storyteller','You make ideas irresistible — design, media, and message are your superpowers.'],
+  data:['📊','The Data Whisperer','You find the signal in the noise and let evidence lead the way.'],
+  people:['🌍','The Community Champion','You move people, not just pixels. Impact follows wherever you connect humans.'],
+  explore:['🚀','The Full-Stack Explorer','A bit of everything, afraid of nothing. You thrive where the map runs out.']
+};
+
+/* ================= RENDER HELPERS ================= */
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+function chipGroup(key, options, multi, xpAmount=15){
+  const c = el(`<div class="chips" role="group"></div>`);
+  const sel = new Set(S[key] || (multi ? [] : (S[key] ? [S[key]] : [])));
+  options.forEach(opt=>{
+    const b = el(`<button type="button" class="chip${sel.has(opt)?' on':''}">${opt}</button>`);
+    b.onclick = ()=>{
+      if(multi){
+        b.classList.toggle('on');
+        b.classList.contains('on') ? sel.add(opt) : sel.delete(opt);
+        S[key] = [...sel];
+      } else {
+        c.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on'); S[key] = opt;
+      }
+      gain(key, xpAmount); save();
+    };
+    c.appendChild(b);
+  });
+  return c;
+}
+
+function emojiScale(key, xpAmount=15){
+  const row = el(`<div class="emoji-row" role="radiogroup"></div>`);
+  EMOJIS.forEach(([e,label],i)=>{
+    const v = i+1;
+    const b = el(`<button type="button" class="emoji-btn${S.ratings[key]===v?' on':''}"><span class="e">${e}</span><small>${label}</small></button>`);
+    b.onclick = ()=>{
+      row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); S.ratings[key]=v; gain('r_'+key, xpAmount); save();
+    };
+    row.appendChild(b);
+  });
+  return row;
+}
+
+function ratingBlock(items){
+  const wrap = document.createElement('div');
+  items.forEach(([key,label,desc])=>{
+    const r = el(`<div class="rate-row"><div class="rlabel">${label}</div><div class="rdesc">${desc}</div></div>`);
+    r.appendChild(emojiScale(key));
+    wrap.appendChild(r);
+  });
+  return wrap;
+}
+
+function textInput(key, placeholder, type='text', xpAmount=15){
+  const i = el(`<input type="${type}" placeholder="${placeholder}">`);
+  i.value = S[key] || '';
+  i.oninput = ()=>{ S[key]=i.value; save(); };
+  i.onblur = ()=>{ if(i.value.trim()) gain(key, xpAmount); };
+  return i;
+}
+function textArea(key, placeholder, xpAmount=20){
+  const i = el(`<textarea placeholder="${placeholder}"></textarea>`);
+  i.value = S[key] || '';
+  i.oninput = ()=>{ S[key]=i.value; save(); };
+  i.onblur = ()=>{ if(i.value.trim()) gain(key, xpAmount); };
+  return i;
+}
+function q(labelHtml, hint, node, optional=true){
+  const w = el(`<div class="q"><span class="q-label">${labelHtml}${optional?'<span class="optional">optional</span>':''}</span>${hint?`<span class="q-hint">${hint}</span>`:''}</div>`);
+  w.appendChild(node);
+  return w;
+}
+
+/* ================= SCREENS ================= */
+const screens = [];
+
+/* --- 0 · Welcome --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <div class="hero">
+      <span class="big-emoji">🎮</span>
+      <h1>You finished the mission.<br>Now tell the story.</h1>
+      <p class="sub">Six months at <b style="color:var(--txt)">nxT Innovation Lab</b> — from first-day rookie to shipping real work. This debrief is part feedback, part <b style="color:var(--txt)">victory lap</b>: rate the journey, show off what you built, and unlock your intern archetype.</p>
+      <div class="pill-row">
+        <span class="pill">⏱️ ~7 minutes</span><span class="pill">💾 Auto-saves as you go</span><span class="pill">🏅 6 badges to earn</span><span class="pill">🕶️ Anonymous mode available</span>
+      </div>
+    </div>
+    <div class="card" id="c0"></div>
+    <div class="nav-row"><span></span><button class="btn btn-primary" id="start">Start the debrief →</button></div>
+  </section>`);
+  const c = s.querySelector('#c0');
+  c.appendChild(q('Pick your player avatar','', (()=> {
+    const a = el(`<div class="avatars"></div>`);
+    AVATARS.forEach(av=>{
+      const b = el(`<button type="button" class="${S.avatar===av?'on':''}">${av}</button>`);
+      b.onclick=()=>{ a.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S.avatar=av; gain('avatar',10); save(); };
+      a.appendChild(b);
+    });
+    return a;
+  })()));
+  c.appendChild(q('Your name','Or leave blank to go full anonymous — feedback counts either way.', textInput('name','e.g. Alex Rivera')));
+  c.appendChild(q('Email','Only if you want us to follow up about part-time / full-time opportunities.', textInput('email','you@example.com','email')));
+  c.appendChild(q('When did your internship start?','', (()=>{ const i=textInput('cohort','','month'); return i; })()));
+  s.querySelector('#start').onclick = ()=>{ awardBadge('b0','🎬','Origin Story'); go(1); };
+  return s;
+});
+
+/* --- 1 · Journey map --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">Chapter 1 · 5 badges left</span>
+    <h2>🗺️ Your journey map</h2>
+    <p class="sub">Every intern starts in the Education brand, then branches out. Where did your path take you?</p>
+    <div class="card" id="c1"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  const c = s.querySelector('#c1');
+  c.appendChild(q('Which areas did you work in?','Tap all that apply — Education first, then wherever the mission took you.', chipGroup('areas', AREAS, true, 20), false));
+  c.appendChild(q('Which area was your favorite?','', chipGroup('favoriteArea', AREAS, false)));
+  c.appendChild(q('In one sentence: what was your mission at nxT?','The elevator-pitch version of what you worked on.', textArea('mission','e.g. I helped build interactive learning tools for the Edu 4.0 platform, then moved into health workflows…')));
+  return s;
+});
+
+/* --- 2 · The two phases --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">Chapter 2 · Level 1 vs Level 2</span>
+    <h2>⚔️ The two phases</h2>
+    <p class="sub">Months 1–3 were the unpaid learning phase. Months 4–6 were paid, with real stakes. Rate each phase honestly — this is where your feedback changes the program.</p>
+    <div class="card">
+      <h3>🌱 Phase 1 — Months 1–3 (learning phase)</h3>
+      <div id="p1"></div>
+    </div>
+    <div class="card">
+      <h3>💼 Phase 2 — Months 4–6 (paid phase)</h3>
+      <div id="p2"></div>
+    </div>
+    <div class="card">
+      <h3>🌡️ The whole experience</h3>
+      <div id="pAll"></div>
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  s.querySelector('#p1').appendChild(ratingBlock(RATINGS_P1));
+  s.querySelector('#p2').appendChild(ratingBlock(RATINGS_P2));
+  s.querySelector('#pAll').appendChild(ratingBlock(RATINGS_OVERALL));
+  return s;
+});
+
+/* --- 3 · Show & tell --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">Chapter 3 · Show &amp; tell</span>
+    <h2>🎤 Demo time — show off what you built</h2>
+    <p class="sub">This is the fun part. Brag a little — it's not just allowed, it's the assignment.</p>
+    <div class="card" id="c3a"></div>
+    <div class="card">
+      <h3>🏗️ Your project showcase</h3>
+      <p class="sub" style="margin-bottom:10px">Add the things you built, shipped, or contributed to. Links to demos, repos, videos, or designs make it real.</p>
+      <div id="proj-list"></div>
+      <button class="add-btn" id="add-proj">＋ Add a project</button>
+    </div>
+    <div class="card" id="c3b">
+      <h3>📈 Day-1 you vs. today you</h3>
+      <p class="sub" style="margin-bottom:4px">Slide both markers: where were you when you started, and where are you now?</p>
+      <div id="sliders"></div>
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Next chapter →</button></div>
+  </section>`);
+  const c3a = s.querySelector('#c3a');
+  c3a.appendChild(q('Top skills you leveled up','Pick up to 5 — these feed your intern archetype at the end. 👀', chipGroup('skills', SKILL_CHIPS, true, 20), false));
+  c3a.appendChild(q('What is something you can do now that felt impossible 6 months ago?','', textArea('unlocked','e.g. I can take a rough idea and turn it into a working prototype in a week…')));
+
+  /* projects */
+  const list = s.querySelector('#proj-list');
+  function renderProjects(){
+    list.innerHTML = '';
+    S.projects.forEach((p, idx)=>{
+      const card = el(`<div class="proj">
+        <button class="del" title="Remove">✕</button>
+        <input type="text" data-f="title" placeholder="Project name — e.g. Edu 4.0 interactive quiz builder" value="${(p.title||'').replace(/"/g,'&quot;')}">
+        <textarea data-f="what" placeholder="What is it, and what was YOUR part in it?">${p.what||''}</textarea>
+        <input type="url" data-f="link" placeholder="🔗 Demo / repo / video / design link (optional)" value="${(p.link||'').replace(/"/g,'&quot;')}">
+        <input type="text" data-f="proud" placeholder="⭐ The one thing you're proudest of in this project" value="${(p.proud||'').replace(/"/g,'&quot;')}">
+      </div>`);
+      card.querySelectorAll('[data-f]').forEach(inp=>{
+        inp.oninput = ()=>{ S.projects[idx][inp.dataset.f] = inp.value; save(); };
+        inp.onblur = ()=>{ if(inp.value.trim()){ gain('proj'+idx+inp.dataset.f, 10); } };
+      });
+      card.querySelector('.del').onclick = ()=>{ S.projects.splice(idx,1); save(); renderProjects(); };
+      list.appendChild(card);
+    });
+  }
+  s.querySelector('#add-proj').onclick = ()=>{
+    S.projects.push({}); save(); renderProjects();
+    if(S.projects.length===1) awardBadge('b3','🎤','Show & Tell');
+    list.lastChild.querySelector('input').focus();
+  };
+  renderProjects();
+
+  /* then vs now sliders */
+  const sl = s.querySelector('#sliders');
+  SKILLS.forEach(skill=>{
+    const st = S.skillsThenNow[skill] || {then:3, now:6};
+    const p = el(`<div class="slider-pair">
+      <div class="sp-head"><b>${skill}</b><span class="delta"></span></div>
+      <div class="slider-line"><label>Day 1</label><input type="range" min="1" max="10" value="${st.then}" data-k="then"><output>${st.then}</output></div>
+      <div class="slider-line"><label>Today</label><input type="range" min="1" max="10" value="${st.now}" data-k="now"><output>${st.now}</output></div>
+    </div>`);
+    const deltaEl = p.querySelector('.delta');
+    function upd(){
+      const d = st.now - st.then;
+      deltaEl.textContent = d > 0 ? `+${d} 🚀` : (d === 0 ? '—' : `${d}`);
+    }
+    p.querySelectorAll('input[type=range]').forEach(r=>{
+      r.oninput = ()=>{
+        st[r.dataset.k] = +r.value;
+        r.parentElement.querySelector('output').textContent = r.value;
+        S.skillsThenNow[skill] = st; upd(); save();
+      };
+      r.onchange = ()=> gain('sl_'+skill, 8);
+    });
+    upd();
+    sl.appendChild(p);
+  });
+  return s;
+});
+
+/* --- 4 · Impact --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">Chapter 4 · Impact report</span>
+    <h2>💥 The mark you left</h2>
+    <p class="sub">Interns at nxT don't just learn — they ship things that outlast the internship. What's yours?</p>
+    <div class="card" id="c4"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" data-next>Final chapter →</button></div>
+  </section>`);
+  const c = s.querySelector('#c4');
+  c.appendChild(q('Your single biggest contribution','If you could point at one thing and say "I did that" — what is it?', textArea('contribution','e.g. The onboarding flow I redesigned is now used for every new student…')));
+  c.appendChild(q('Can you put a number on it?','People reached, hours saved, features shipped, students taught — any metric counts.', textInput('metric','e.g. 120 students used the tool · 3 features shipped · cut setup time by half')));
+  c.appendChild(q('Who benefited most from your work?','', chipGroup('beneficiary',['Students / learners','Patients / clients','The nxT team','A partner organization','The community','Future interns'], true)));
+  c.appendChild(q('A moment you\'ll actually remember','A win, a save, a funny disaster that taught you something.', textArea('moment','Tell the story…')));
+  return s;
+});
+
+/* --- 5 · What's next --- */
+screens.push(()=>{
+  const s = el(`<section class="screen">
+    <span class="chapter-tag">Chapter 5 · New game +</span>
+    <h2>🔮 What happens next?</h2>
+    <p class="sub">The internship can lead to part-time or full-time roles. Last honest answers — then your archetype awaits.</p>
+    <div class="card" id="c5"></div>
+    <div class="nav-row"><button class="btn btn-ghost" data-back>← Back</button><button class="btn btn-primary" id="finish">Finish &amp; reveal my archetype 🎁</button></div>
+  </section>`);
+  const c = s.querySelector('#c5');
+  c.appendChild(q('Would you want to keep going with nxT?','', chipGroup('continue',['Full-time, sign me up','Part-time works for me','Freelance / per-project','Maybe later — keep in touch','This chapter is complete for me'], false, 20), false));
+  c.appendChild(q('How likely are you to recommend this internship to a friend?','', (()=>{
+    const w = document.createElement('div');
+    const n = el(`<div class="nps"></div>`);
+    for(let i=0;i<=10;i++){
+      const b = el(`<button type="button"${S.nps===i?' class="on"':''}>${i}</button>`);
+      b.onclick = ()=>{ n.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); S.nps=i; gain('nps',20); save(); };
+      n.appendChild(b);
+    }
+    w.appendChild(n);
+    w.appendChild(el(`<div class="nps-legend"><span>Not a chance</span><span>Take my friends</span></div>`));
+    return w;
+  })(), false));
+  c.appendChild(q('One thing nxT should <b>keep doing</b>','', textArea('keep','The thing that worked — don\'t let them change it.')));
+  c.appendChild(q('One thing nxT should <b>fix or change</b>','Be blunt. This goes straight to the people who can change it.', textArea('fix','If you ran the program, what would you do differently?')));
+  c.appendChild(q('Your advice to the next intern','One sentence they\'ll read on their first day.', textInput('advice','e.g. Ask the "dumb" question on day one — it saves you a month.')));
+  c.appendChild(q('A testimonial we could share','', textArea('testimonial','A few words about your experience, in your voice…')));
+  c.appendChild((()=>{
+    const l = el(`<label class="checkbox-line"><input type="checkbox" ${S.testimonialOk?'checked':''}><span>You can share my testimonial (and first name, if I gave it) publicly — website, social, recruiting.</span></label>`);
+    l.querySelector('input').onchange = e=>{ S.testimonialOk = e.target.checked; save(); };
+    return l;
+  })());
+  s.querySelector('#finish').onclick = finish;
+  return s;
+});
+
+/* --- 6 · Finale --- */
+screens.push(()=>{
+  const arch = pickArchetype();
+  const growth = totalGrowth();
+  const s = el(`<section class="screen">
+    <div class="hero">
+      <span class="big-emoji">${S.avatar || '🏆'}</span>
+      <h1>Mission complete${S.name ? ', ' + S.name.split(' ')[0] : ''}!</h1>
+      <p class="sub">Six months. ${S.projects.filter(p=>p.title).length || 'Your'} project${S.projects.filter(p=>p.title).length===1?'':'s'} showcased. ${growth>0? '+'+growth+' total skill points of growth.' : 'A whole lot of growth.'}</p>
+    </div>
+    <div class="archetype">
+      <span class="a-emoji">${arch[0]}</span>
+      <h3>${arch[1]}</h3>
+      <p class="sub" style="margin-top:6px">${arch[2]}</p>
+    </div>
+    <div class="card">
+      <h3>🏅 Trophy shelf</h3>
+      <div class="badge-grid" id="shelf"></div>
+      <p class="sub" style="text-align:center;font-family:'Space Grotesk';font-weight:700;color:var(--lime)" id="final-xp"></p>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost" data-back>← Edit answers</button>
+      <button class="btn btn-primary" id="submit">Submit my debrief 🚀</button>
+    </div>
+    <div class="error-note" id="err"></div>
+  </section>`);
+  const ALL_BADGES = [['b0','🎬','Origin Story'],['b1','🗺️','Pathfinder'],['b2','⚔️','Honest Critic'],['b3','🎤','Show & Tell'],['b4','💥','Impact Maker'],['b5','🔮','Future Builder']];
+  const shelf = s.querySelector('#shelf');
+  ALL_BADGES.forEach(([id,e,n])=>{
+    shelf.appendChild(el(`<div class="badge${badges.has(id)?' won':''}"><span class="be">${e}</span><small>${n}</small></div>`));
+  });
+  s.querySelector('#final-xp').textContent = xp + ' XP · ' + document.getElementById('lvl').textContent;
+  s.querySelector('#submit').onclick = submit;
+  return s;
+});
+
+function pickArchetype(){
+  const sk = (S.skills||[]).join(' ').toLowerCase();
+  const score = {build:0,create:0,data:0,people:0};
+  [['build',['development','code','no-code','engineering','ai & prompt']],
+   ['create',['design','video','media','ux','speaking']],
+   ['data',['data','research','analysis']],
+   ['people',['community','teaching','outreach','facilitation','sales','management']]
+  ].forEach(([k,words])=> words.forEach(w=>{ if(sk.includes(w)) score[k]++; }));
+  const best = Object.entries(score).sort((a,b)=>b[1]-a[1])[0];
+  return (!best || best[1]===0 || (S.areas||[]).length >= 4) && (S.areas||[]).length >= 4
+    ? ARCHETYPES.explore
+    : (best && best[1] > 0 ? ARCHETYPES[best[0]] : ARCHETYPES.explore);
+}
+function totalGrowth(){
+  return Object.values(S.skillsThenNow).reduce((t,v)=> t + Math.max(0,(v.now||0)-(v.then||0)), 0);
+}
+
+/* ================= NAV ================= */
+function go(i){
+  if(i===2) awardBadge('b1','🗺️','Pathfinder');
+  if(i===3) awardBadge('b2','⚔️','Honest Critic');
+  if(i===4 && S.projects.some(p=>p.title)) awardBadge('b3','🎤','Show & Tell');
+  if(i===5) awardBadge('b4','💥','Impact Maker');
+  screenIdx = i; save(); render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function finish(){
+  awardBadge('b5','🔮','Future Builder');
+  go(6);
+  setTimeout(confettiBurst, 400);
+}
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const s = screens[screenIdx]();
+  s.classList.add('active');
+  app.appendChild(s);
+  s.querySelectorAll('[data-back]').forEach(b=> b.onclick = ()=> go(screenIdx-1));
+  s.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=> go(screenIdx+1));
+  renderHUD();
+}
+
+/* ================= SUBMIT ================= */
+async function submit(){
+  const btn = document.getElementById('submit');
+  const err = document.getElementById('err');
+  btn.disabled = true; btn.textContent = 'Transmitting… 📡';
+  const payload = {
+    name:S.name||null, email:S.email||null, avatar:S.avatar||null, cohort:S.cohort||null,
+    areas:S.areas||[], favoriteArea:S.favoriteArea||null, mission:S.mission||null,
+    ratings:S.ratings, skills:S.skills||[], unlocked:S.unlocked||null,
+    projects:S.projects.filter(p=>p.title||p.what), skillsThenNow:S.skillsThenNow,
+    contribution:S.contribution||null, metric:S.metric||null, beneficiary:S.beneficiary||[],
+    moment:S.moment||null, continueInterest:S.continue||null, nps:S.nps??null,
+    keep:S.keep||null, fix:S.fix||null, advice:S.advice||null,
+    testimonial:S.testimonial||null, testimonialOk:!!S.testimonialOk,
+    xp, badges:[...badges], archetype:pickArchetype()[1]
+  };
+  try{
+    const r = await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    btn.textContent = 'Received — thank you! 💜';
+    confettiBurst(); confettiBurst();
+    toast('🚀','Debrief transmitted','Thank you for 6 months of awesome.');
+    localStorage.removeItem('nxt-debrief');
+    err.style.display='none';
+  }catch(e){
+    btn.disabled = false; btn.textContent = 'Try again 🚀';
+    err.style.display='block';
+    err.innerHTML = 'Hmm, transmission failed. Your answers are still saved on this device — try again in a moment, or <a href="#" id="dl" style="color:var(--accent)">download your answers</a> and email them to the team.';
+    err.querySelector('#dl').onclick = (ev)=>{
+      ev.preventDefault();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+      a.download = 'nxt-internship-debrief.json'; a.click();
+    };
+  }
+}
+
+/* ================= CONFETTI ================= */
+function confettiBurst(){
+  const cv = document.getElementById('confetti');
+  const ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#6ee7ff','#a78bfa','#f472b6','#bef264','#fbbf24'];
+  const parts = Array.from({length:120},()=>({
+    x: innerWidth/2 + (Math.random()-.5)*200, y: innerHeight*0.35,
+    vx:(Math.random()-.5)*14, vy:-Math.random()*14-4,
+    s: Math.random()*7+4, c: colors[Math.floor(Math.random()*colors.length)],
+    r: Math.random()*Math.PI, vr:(Math.random()-.5)*.3, life: 1
+  }));
+  let frame = 0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.35; p.r+=p.vr; p.life-=.008;
+      ctx.save(); ctx.globalAlpha=Math.max(0,p.life); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6); ctx.restore();
+    });
+    if(++frame<160) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+render();
+</script>
+</body>
+</html>

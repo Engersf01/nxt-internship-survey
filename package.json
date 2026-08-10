@@ -1,0 +1,9 @@
+{
+  "name": "nxt-internship-survey",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mission Debrief — gamified post-internship survey for nxT Innovation Lab",
+  "dependencies": {
+    "@vercel/blob": "^0.27.0"
+  }
+}
