@@ -240,10 +240,12 @@ function makePad(canvas, typedInput, tabsEl){
       if(mode==='type') typedInput.focus();
     });
   }
+  function ensureSized(){ if(canvas.width===0 || canvas.height===0){ resize(); if(mode==='type') renderTyped(); } }
+  canvas.addEventListener('pointerenter', ensureSized);
   return {
-    isEmpty: ()=>!dirty,
+    isEmpty: ()=>{ ensureSized(); return !dirty || canvas.width===0; },
     clear: clearAll,
-    data: ()=>canvas.toDataURL('image/png')
+    data: ()=>{ ensureSized(); return canvas.toDataURL('image/png'); }
   };
 }
 
@@ -478,7 +480,7 @@ async function boot(){
     }
     return;
   }
-  if(token){ initCreate(); $('#create').classList.remove('hidden'); $('#backAdmin').classList.remove('hidden'); }
+  if(token){ $('#create').classList.remove('hidden'); $('#backAdmin').classList.remove('hidden'); initCreate(); }
   else $('#gate').classList.remove('hidden');
 }
 
