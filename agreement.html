@@ -7,7 +7,7 @@
 <title>Internship Agreement · nxT Innovation Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{
@@ -48,6 +48,11 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--muted);margin:16px 0 4px;cursor:pointer}
 .consent input{width:18px;height:18px;margin-top:2px;accent-color:#0284c7;flex-shrink:0}
 .pad-wrap{margin-top:6px}
+.sig-tabs{display:inline-flex;background:#eef2f7;border-radius:10px;padding:3px;gap:2px;margin-bottom:8px}
+.stab{border:none;background:transparent;color:var(--muted);font-family:'Inter';font-weight:600;font-size:.78rem;
+  padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .15s}
+.stab.on{background:#fff;color:var(--txt);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+.typed-sig{margin-bottom:8px;font-size:1.05rem}
 .pad{width:100%;height:150px;background:#fff;border:1.5px dashed #94a3b8;border-radius:12px;touch-action:none;cursor:crosshair;display:block}
 .pad.signed{border-style:solid;border-color:var(--green)}
 .pad-tools{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
@@ -122,10 +127,12 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(
         <div><label>Authorized representative</label><input type="text" id="f-repName" placeholder="Your full name"></div>
         <div><label>Title</label><input type="text" id="f-repTitle" placeholder="e.g. Founder & Director"></div>
       </div>
-      <label>Signature — draw below</label>
+      <label>Signature</label>
       <div class="pad-wrap">
+        <div class="sig-tabs" id="tabs-nxt"><button type="button" class="stab on" data-m="draw">✍ Draw</button><button type="button" class="stab" data-m="type">⌨ Type</button></div>
+        <input type="text" class="typed-sig hidden" id="typed-nxt" placeholder="Type your full name" autocomplete="off">
         <canvas class="pad" id="pad-nxt"></canvas>
-        <div class="pad-tools"><small>Draw with mouse or finger</small><button class="btn" type="button" id="clear-nxt">Clear</button></div>
+        <div class="pad-tools"><small>Draw with mouse or finger, or switch to Type</small><button class="btn" type="button" id="clear-nxt">Clear</button></div>
       </div>
       <label class="consent"><input type="checkbox" id="consent-nxt"><span>I agree that my electronic signature is the legal equivalent of my handwritten signature on this Agreement.</span></label>
       <div style="margin-top:16px"><button class="btn btn-primary" id="createBtn">Create &amp; sign as nxT →</button></div>
@@ -151,10 +158,12 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(
     <label>Full legal name</label><input type="text" id="p-fullName" placeholder="Your full legal name">
     <label>Address <span class="opt">(street, city, state, ZIP)</span></label><input type="text" id="p-address" placeholder="Your mailing address">
     <label>Email</label><input type="email" id="p-email" placeholder="you@example.com">
-    <label>Signature — draw below</label>
+    <label>Signature</label>
     <div class="pad-wrap">
+      <div class="sig-tabs" id="tabs-p"><button type="button" class="stab on" data-m="draw">✍ Draw</button><button type="button" class="stab" data-m="type">⌨ Type</button></div>
+      <input type="text" class="typed-sig hidden" id="typed-p" placeholder="Type your full name" autocomplete="off">
       <canvas class="pad" id="pad-p"></canvas>
-      <div class="pad-tools"><small>Draw with mouse or finger</small><button class="btn" type="button" id="clear-p">Clear</button></div>
+      <div class="pad-tools"><small>Draw with mouse or finger, or switch to Type</small><button class="btn" type="button" id="clear-p">Clear</button></div>
     </div>
     <label class="consent"><input type="checkbox" id="consent-p"><span>I have reviewed this Agreement, I accept its terms, and I agree that my electronic signature is the legal equivalent of my handwritten signature.</span></label>
     <div style="margin-top:16px"><button class="btn btn-primary" id="signBtn">Sign agreement ✍</button></div>
@@ -176,27 +185,64 @@ function toastA(msg){ const t=$('#toastA'); t.textContent=msg; t.classList.add('
 const fmtDate = (iso)=> iso ? new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : null;
 const fmtD = (d)=> d ? new Date(d+'T12:00:00').toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : null;
 
-/* ---------- signature pad ---------- */
-function makePad(canvas){
+/* ---------- signature pad (draw or type) ---------- */
+function makePad(canvas, typedInput, tabsEl){
   const ctx = canvas.getContext('2d');
-  let drawing=false, dirty=false;
+  let drawing=false, dirty=false, mode='draw', typedText='';
+  try{ document.fonts.load('44px "Great Vibes"'); }catch(_){}
+  function cssSize(){ return canvas.getBoundingClientRect(); }
+  function wipe(){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.restore(); }
+  function renderTyped(){
+    wipe();
+    const r = cssSize();
+    if(typedText){
+      ctx.save();
+      let size = 46;
+      ctx.font = size+'px "Great Vibes", cursive';
+      while(ctx.measureText(typedText).width > r.width-40 && size > 18){ size -= 2; ctx.font = size+'px "Great Vibes", cursive'; }
+      ctx.fillStyle = '#1e3a8a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(typedText, r.width/2, r.height/2);
+      ctx.restore();
+    }
+    dirty = !!typedText;
+    canvas.classList.toggle('signed', dirty);
+  }
   function resize(){
-    const r = canvas.getBoundingClientRect();
+    const r = cssSize();
     const dpr = window.devicePixelRatio||1;
-    const old = dirty ? canvas.toDataURL() : null;
+    const old = (dirty && mode==='draw') ? canvas.toDataURL() : null;
     canvas.width = r.width*dpr; canvas.height = r.height*dpr;
     ctx.scale(dpr,dpr); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1e3a8a';
-    if(old){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=old; }
+    if(mode==='type') renderTyped();
+    else if(old){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=old; }
   }
   resize(); window.addEventListener('resize', resize);
-  const pos = (e)=>{ const r=canvas.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
-  canvas.addEventListener('pointerdown', e=>{ drawing=true; dirty=true; canvas.setPointerCapture(e.pointerId); const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+0.1,y+0.1); ctx.stroke(); });
+  const pos = (e)=>{ const r=cssSize(); return [e.clientX-r.left, e.clientY-r.top]; };
+  canvas.addEventListener('pointerdown', e=>{ if(mode!=='draw') return; drawing=true; dirty=true; canvas.setPointerCapture(e.pointerId); const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+0.1,y+0.1); ctx.stroke(); });
   canvas.addEventListener('pointermove', e=>{ if(!drawing) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); });
-  const up = ()=>{ drawing=false; canvas.classList.toggle('signed', dirty); };
+  const up = ()=>{ if(!drawing) return; drawing=false; canvas.classList.toggle('signed', dirty); };
   canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+  function clearAll(){ wipe(); dirty=false; typedText=''; if(typedInput) typedInput.value=''; canvas.classList.remove('signed'); }
+  if(typedInput){
+    typedInput.addEventListener('input', async ()=>{
+      typedText = typedInput.value.trim();
+      try{ await document.fonts.load('44px "Great Vibes"'); }catch(_){}
+      renderTyped();
+    });
+  }
+  if(tabsEl){
+    tabsEl.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{
+      if(b.dataset.m===mode) return;
+      mode = b.dataset.m;
+      tabsEl.querySelectorAll('.stab').forEach(x=>x.classList.toggle('on', x===b));
+      typedInput.classList.toggle('hidden', mode!=='type');
+      clearAll();
+      if(mode==='type') typedInput.focus();
+    });
+  }
   return {
     isEmpty: ()=>!dirty,
-    clear: ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); dirty=false; canvas.classList.remove('signed'); },
+    clear: clearAll,
     data: ()=>canvas.toDataURL('image/png')
   };
 }
@@ -438,7 +484,7 @@ async function boot(){
 
 /* ---------- admin create ---------- */
 function initCreate(){
-  const pad = makePad($('#pad-nxt'));
+  const pad = makePad($('#pad-nxt'), $('#typed-nxt'), $('#tabs-nxt'));
   $('#clear-nxt').onclick = ()=>pad.clear();
   const fieldIds = ['participantName','effectiveDate','compStructure','compRate','compFrequency','startDate','endDate','governingState'];
   const liveDoc = ()=>{
@@ -477,7 +523,7 @@ function initCreate(){
 /* ---------- participant sign ---------- */
 function initParticipantSign(){
   if($('#signCard').classList.contains('hidden')) return;
-  const pad = makePad($('#pad-p'));
+  const pad = makePad($('#pad-p'), $('#typed-p'), $('#tabs-p'));
   $('#clear-p').onclick = ()=>pad.clear();
   if(AG?.fields?.participantName) $('#p-fullName').value = AG.fields.participantName;
   $('#signBtn').onclick = async ()=>{
