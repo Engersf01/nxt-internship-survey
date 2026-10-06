@@ -217,6 +217,18 @@ tr.rrow:hover td{background:#f8fafc}
       </div>
       <div class="code-chips" id="codes"></div>
     </div>
+
+    <div class="card">
+      <h2>Payment agreements <span class="sub" id="acount" style="font-weight:400"></span></h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn btn-primary" href="/agreement" target="_blank">＋ New agreement</a>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px"><table id="atable">
+        <thead><tr><th>Created</th><th>Participant</th><th>Status</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <div class="empty hidden" id="aempty">No agreements yet — create one and send the private link to the participant.</div>
+    </div>
   </div>
 </div>
 
@@ -320,6 +332,29 @@ async function load(){
     render();
     renderLeader();
     await loadCodes();
+    await loadAgreements();
+  }catch(ex){ toastA(ex.message); }
+}
+async function loadAgreements(){
+  try{
+    const j = await api('/api/agreement?list=1');
+    const ags = j.agreements||[];
+    $('#acount').textContent = '— '+ags.length;
+    $('#aempty').classList.toggle('hidden', ags.length>0);
+    const label = (s)=> s==='completed' ? '<span class="pill" style="background:#ecfdf5;color:#059669">✓ Fully executed</span>'
+                      : '<span class="pill" style="background:#fffbeb;color:#b45309">Awaiting participant</span>';
+    $('#atable tbody').innerHTML = ags.map(a=>`<tr>
+      <td>${a.createdAt? new Date(a.createdAt).toLocaleDateString(undefined,{dateStyle:'medium'}):'—'}</td>
+      <td>${esc(a.participantName)||'—'}</td>
+      <td>${label(a.status)}</td>
+      <td style="white-space:nowrap">
+        <a class="btn" style="padding:5px 10px;font-size:.75rem" href="/agreement?id=${a.id}" target="_blank">Open</a>
+        <button class="btn copy-ag" style="padding:5px 10px;font-size:.75rem" data-id="${a.id}">Copy link</button>
+      </td>
+    </tr>`).join('');
+    document.querySelectorAll('.copy-ag').forEach(b=>b.onclick=()=>{
+      navigator.clipboard.writeText(location.origin+'/agreement?id='+b.dataset.id).then(()=>toastA('Agreement link copied'));
+    });
   }catch(ex){ toastA(ex.message); }
 }
 document.querySelectorAll('.seg').forEach(b=>b.onclick=()=>{

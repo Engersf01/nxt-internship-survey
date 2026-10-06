@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Internship Agreement · nxT Innovation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{
+  --bg:#f8fafc;--card:#ffffff;--br:#e2e8f0;--txt:#0f172a;--muted:#64748b;
+  --accent:#0284c7;--accent-soft:#e0f2fe;--green:#059669;--green-soft:#ecfdf5;--amber:#b45309;--amber-soft:#fffbeb;--red:#dc2626;
+  --grad:linear-gradient(90deg,#0ea5e9,#8b5cf6,#ec4899);
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;min-height:100vh}
+h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px 18px 80px}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--br)}
+.top-inner{max-width:860px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:1.02rem}
+.top h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top .spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--br);background:#fff;color:var(--txt);
+  border-radius:10px;padding:9px 16px;font-family:'Inter';font-weight:600;font-size:.85rem;cursor:pointer;transition:all .15s;text-decoration:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--grad);color:#fff;border:none;box-shadow:0 3px 10px rgba(139,92,246,.3)}
+.btn-primary:hover{color:#fff;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.card{background:var(--card);border:1px solid var(--br);border-radius:16px;padding:22px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{font-size:1.05rem;margin-bottom:12px}
+.sub{color:var(--muted);font-size:.87rem}
+.banner{border-radius:14px;padding:14px 18px;margin:16px 0;font-size:.9rem;font-weight:500;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.banner.pending{background:var(--amber-soft);border:1px solid #fde68a;color:var(--amber)}
+.banner.done{background:var(--green-soft);border:1px solid #a7f3d0;color:var(--green)}
+label{display:block;font-size:.8rem;font-weight:600;margin:14px 0 5px}
+label .opt{font-weight:400;color:var(--muted)}
+input[type=text],input[type=email],input[type=date],textarea{
+  width:100%;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:10px 13px;font-size:.92rem;font-family:inherit;outline:none}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(2,132,199,.12);background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 16px}
+@media(max-width:620px){.grid2,.grid3{grid-template-columns:1fr}}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--muted);margin:16px 0 4px;cursor:pointer}
+.consent input{width:18px;height:18px;margin-top:2px;accent-color:#0284c7;flex-shrink:0}
+.pad-wrap{margin-top:6px}
+.pad{width:100%;height:150px;background:#fff;border:1.5px dashed #94a3b8;border-radius:12px;touch-action:none;cursor:crosshair;display:block}
+.pad.signed{border-style:solid;border-color:var(--green)}
+.pad-tools{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.pad-tools small{color:var(--muted);font-size:.75rem}
+.linkbox{display:flex;gap:8px;margin-top:10px}
+.linkbox input{flex:1;font-size:.82rem;color:var(--muted)}
+.err{display:none;color:var(--red);font-size:.85rem;margin-top:12px}
+.hidden{display:none!important}
+#toastA{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(150%);background:#0f172a;color:#fff;border-radius:12px;padding:10px 18px;font-size:.85rem;transition:transform .35s;z-index:50}
+#toastA.show{transform:translateX(-50%) translateY(0)}
+/* ---------- the document ---------- */
+#doc{background:#fff;border:1px solid var(--br);border-radius:16px;box-shadow:var(--shadow);
+  padding:48px 52px;margin:16px 0;font-family:Georgia,'Times New Roman',serif;font-size:.93rem;line-height:1.65;color:#1e293b}
+#doc h1{font-family:Georgia,serif;font-size:1.15rem;text-align:center;letter-spacing:.04em;margin-bottom:18px;color:#0f172a}
+#doc h2{font-family:Georgia,serif;font-size:.98rem;margin:22px 0 8px;color:#0f172a}
+#doc p{margin:0 0 10px}
+#doc ul,#doc ol{margin:0 0 10px 26px}
+#doc li{margin-bottom:3px}
+.fv{font-weight:700;color:#0f172a;border-bottom:1.5px solid #0f172a;padding:0 4px;white-space:pre-wrap}
+.blank{display:inline-block;min-width:200px;border-bottom:1.5px solid #94a3b8;height:1em;vertical-align:bottom}
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:22px}
+@media(max-width:620px){.sig-grid{grid-template-columns:1fr}#doc{padding:26px 20px}}
+.sig-block h3{font-family:Georgia,serif;font-size:.95rem;margin-bottom:10px}
+.sig-line{margin:10px 0 2px;border-bottom:1.5px solid #0f172a;min-height:52px;display:flex;align-items:flex-end}
+.sig-line img{max-height:60px;max-width:100%}
+.sig-cap{font-size:.75rem;color:#64748b;margin-bottom:10px}
+.exec-stamp{margin-top:26px;border:1.5px solid var(--green);border-radius:10px;padding:10px 14px;color:var(--green);
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;text-align:center}
+@media print{
+  body{background:#fff}
+  .top,.card,.banner,#toastA,.no-print{display:none!important}
+  #doc{border:none;box-shadow:none;margin:0;padding:0;border-radius:0}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="top-inner">
+  <h1>nxT <span>Internship Agreement</span></h1>
+  <div class="spacer"></div>
+  <button class="btn btn-primary hidden" id="dl">Download PDF</button>
+  <button class="btn hidden" id="printBtn">Print</button>
+  <a class="btn hidden" id="backAdmin" href="/admin">Admin</a>
+</div></div>
+
+<div class="wrap">
+  <div id="gate" class="card hidden">
+    <h2>Agreement link needed</h2>
+    <p class="sub">This page hosts internship payment agreements. If you're a participant, open the private link your nxT coordinator sent you. If you're an administrator, <a href="/admin" style="color:var(--accent)">sign in</a> first, then come back here to create one.</p>
+  </div>
+
+  <!-- ============ ADMIN: CREATE ============ -->
+  <div id="create" class="hidden">
+    <div class="card">
+      <h2>New internship payment agreement</h2>
+      <p class="sub">Fill in the blanks, sign as nxT, and you'll get a private link to send to the participant. The document below updates live as you type.</p>
+      <div class="grid2">
+        <div><label>Participant name (as invited)</label><input type="text" id="f-participantName" placeholder="e.g. Jancel Lewis"></div>
+        <div><label>Effective date</label><input type="date" id="f-effectiveDate"></div>
+      </div>
+      <div class="grid3">
+        <div><label>Compensation structure</label><input type="text" id="f-compStructure" placeholder="e.g. Monthly stipend"></div>
+        <div><label>Rate / amount</label><input type="text" id="f-compRate" placeholder="e.g. $600 per month"></div>
+        <div><label>Payment frequency</label><input type="text" id="f-compFrequency" placeholder="e.g. Monthly, last business day"></div>
+      </div>
+      <div class="grid3">
+        <div><label>Start date</label><input type="date" id="f-startDate"></div>
+        <div><label>End date</label><input type="date" id="f-endDate"></div>
+        <div><label>Governing state</label><input type="text" id="f-governingState" placeholder="e.g. New York"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Authorized representative</label><input type="text" id="f-repName" placeholder="Your full name"></div>
+        <div><label>Title</label><input type="text" id="f-repTitle" placeholder="e.g. Founder & Director"></div>
+      </div>
+      <label>Signature — draw below</label>
+      <div class="pad-wrap">
+        <canvas class="pad" id="pad-nxt"></canvas>
+        <div class="pad-tools"><small>Draw with mouse or finger</small><button class="btn" type="button" id="clear-nxt">Clear</button></div>
+      </div>
+      <label class="consent"><input type="checkbox" id="consent-nxt"><span>I agree that my electronic signature is the legal equivalent of my handwritten signature on this Agreement.</span></label>
+      <div style="margin-top:16px"><button class="btn btn-primary" id="createBtn">Create &amp; sign as nxT →</button></div>
+      <div class="err" id="create-err"></div>
+    </div>
+  </div>
+
+  <!-- ============ SHARED: STATUS + SHARE ============ -->
+  <div id="statusArea"></div>
+  <div id="shareCard" class="card hidden">
+    <h2>Share with the participant</h2>
+    <p class="sub">This private link is the participant's access — send it only to them. They'll review, fill in their details, and sign.</p>
+    <div class="linkbox"><input type="text" id="shareLink" readonly><button class="btn" id="copyLink">Copy</button></div>
+  </div>
+
+  <!-- ============ THE DOCUMENT ============ -->
+  <div id="doc" class="hidden"></div>
+
+  <!-- ============ PARTICIPANT: SIGN ============ -->
+  <div id="signCard" class="card hidden no-print">
+    <h2>Review &amp; sign</h2>
+    <p class="sub">Read the full agreement above, complete your details, and sign. Once both signatures are in, you'll be able to download the executed PDF.</p>
+    <label>Full legal name</label><input type="text" id="p-fullName" placeholder="Your full legal name">
+    <label>Address <span class="opt">(street, city, state, ZIP)</span></label><input type="text" id="p-address" placeholder="Your mailing address">
+    <label>Email</label><input type="email" id="p-email" placeholder="you@example.com">
+    <label>Signature — draw below</label>
+    <div class="pad-wrap">
+      <canvas class="pad" id="pad-p"></canvas>
+      <div class="pad-tools"><small>Draw with mouse or finger</small><button class="btn" type="button" id="clear-p">Clear</button></div>
+    </div>
+    <label class="consent"><input type="checkbox" id="consent-p"><span>I have reviewed this Agreement, I accept its terms, and I agree that my electronic signature is the legal equivalent of my handwritten signature.</span></label>
+    <div style="margin-top:16px"><button class="btn btn-primary" id="signBtn">Sign agreement ✍</button></div>
+    <div class="err" id="sign-err"></div>
+  </div>
+</div>
+
+<div id="toastA"></div>
+
+<script>
+const $ = (s)=>document.querySelector(s);
+const esc = (s)=>String(s??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const token = sessionStorage.getItem('nxt-admin-token') || '';
+const params = new URLSearchParams(location.search);
+const AG_ID = params.get('id');
+let AG = null;
+
+function toastA(msg){ const t=$('#toastA'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+const fmtDate = (iso)=> iso ? new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : null;
+const fmtD = (d)=> d ? new Date(d+'T12:00:00').toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : null;
+
+/* ---------- signature pad ---------- */
+function makePad(canvas){
+  const ctx = canvas.getContext('2d');
+  let drawing=false, dirty=false;
+  function resize(){
+    const r = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio||1;
+    const old = dirty ? canvas.toDataURL() : null;
+    canvas.width = r.width*dpr; canvas.height = r.height*dpr;
+    ctx.scale(dpr,dpr); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#1e3a8a';
+    if(old){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=old; }
+  }
+  resize(); window.addEventListener('resize', resize);
+  const pos = (e)=>{ const r=canvas.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
+  canvas.addEventListener('pointerdown', e=>{ drawing=true; dirty=true; canvas.setPointerCapture(e.pointerId); const [x,y]=pos(e); ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+0.1,y+0.1); ctx.stroke(); });
+  canvas.addEventListener('pointermove', e=>{ if(!drawing) return; const [x,y]=pos(e); ctx.lineTo(x,y); ctx.stroke(); });
+  const up = ()=>{ drawing=false; canvas.classList.toggle('signed', dirty); };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+  return {
+    isEmpty: ()=>!dirty,
+    clear: ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); dirty=false; canvas.classList.remove('signed'); },
+    data: ()=>canvas.toDataURL('image/png')
+  };
+}
+
+/* ---------- document template ---------- */
+function fill(v, w){ return v ? `<span class="fv">${esc(v)}</span>` : `<span class="blank"${w?` style="min-width:${w}px"`:''}></span>`; }
+function sigLine(img){ return `<div class="sig-line">${img?`<img src="${img}" alt="signature">`:''}</div>`; }
+
+function docHtml(d){
+  const F = d.fields||{}, N = d.nxt||{}, P = d.participant||{};
+  return `
+  <h1>INDEPENDENT CONTRACTOR INTERNSHIP AGREEMENT</h1>
+  <p>This Independent Contractor Internship Agreement (“Agreement”) is entered into between nxT Innovation Lab, Inc. and/or nxT IL LLC, as applicable (“nxT”), and ${fill(P.fullName||F.participantName,220)} (“Participant”), effective ${fill(fmtD(F.effectiveDate),150)}.</p>
+
+  <h2>1. Purpose of the Engagement</h2>
+  <p>The purpose of this engagement is to provide the Participant with an opportunity to gain practical experience, develop professional skills, contribute to innovation-related projects, and participate in real-world initiatives undertaken by nxT.</p>
+  <p>The Participant may be assigned projects, objectives, deliverables, research activities, or other defined outcomes consistent with the Participant’s area of interest and the objectives of the program.</p>
+  <p>The parties intend this to be a flexible, project- and outcome-oriented engagement.</p>
+
+  <h2>2. Independent Relationship</h2>
+  <p>The Participant will perform services as an independent contractor and not as an employee of nxT, subject to applicable federal, state, and local law.</p>
+  <p>Nothing in this Agreement creates an employer-employee relationship, partnership, joint venture, agency relationship, or other employment relationship between the parties.</p>
+  <p>The Participant retains independence regarding the manner and means used to complete assigned projects and deliverables, subject to agreed objectives, deadlines, security requirements, confidentiality obligations, and applicable laws and policies.</p>
+  <p>The parties acknowledge that the actual nature of the working relationship, and not merely the title or language of this Agreement, determines the Participant’s legal classification.</p>
+
+  <h2>3. Flexible Time Commitment</h2>
+  <p>The anticipated commitment is approximately ten (10) hours per week.</p>
+  <p>This represents an expected weekly level of participation and does not establish a required daily schedule.</p>
+  <p>The Participant:</p>
+  <ul>
+    <li>Is not required to work a specific number of hours on any particular day;</li>
+    <li>May determine when during the week the work will be performed;</li>
+    <li>May divide the anticipated weekly commitment among days in whatever manner the Participant considers appropriate;</li>
+    <li>Is not required to maintain traditional business hours;</li>
+    <li>May generally modify their working schedule without obtaining advance approval from nxT; and</li>
+    <li>Is responsible for managing their own time to meet agreed deadlines, meetings, and deliverables.</li>
+  </ul>
+  <p>There is no requirement that the Participant perform two hours of work each day.</p>
+
+  <h2>4. Location Flexibility</h2>
+  <p>Unless a specific project reasonably requires otherwise, the Participant may determine where the work is performed.</p>
+  <p>The Participant may work remotely from a home, university, coworking environment, or other appropriate location of their choosing.</p>
+  <p>Occasional participation in meetings, demonstrations, community events, training sessions, presentations, or other activities may be requested. When attendance at a particular time or location is necessary, nxT will communicate the requirement in advance whenever reasonably possible.</p>
+
+  <h2>5. Independence in Performing the Work</h2>
+  <p>nxT may establish:</p>
+  <ul>
+    <li>Project objectives;</li><li>Expected outcomes;</li><li>Deliverables;</li><li>Reasonable deadlines;</li>
+    <li>Technical or functional requirements;</li><li>Quality standards;</li>
+    <li>Privacy, security, and confidentiality requirements; and</li>
+    <li>Compliance requirements applicable to nxT projects.</li>
+  </ul>
+  <p>Subject to those requirements, the Participant will generally determine the methods, sequence, process, tools, and workflow used to accomplish the work.</p>
+  <p>nxT is primarily interested in the successful completion of agreed objectives and deliverables rather than controlling the Participant’s day-to-day working methods.</p>
+
+  <h2>6. Meetings and Collaboration</h2>
+  <p>The Participant may be invited to periodic meetings, mentoring sessions, project reviews, demonstrations, or collaborative activities.</p>
+  <p>Except where participation is reasonably necessary for a particular project, these activities should not be interpreted as establishing a fixed daily working schedule.</p>
+  <p>The parties may mutually agree upon recurring meetings for coordination, education, mentoring, or project review.</p>
+
+  <h2>7. Other Employment, Education, and Activities</h2>
+  <p>The Participant may simultaneously:</p>
+  <ul>
+    <li>Attend school or university;</li><li>Maintain other employment;</li><li>Operate a business;</li>
+    <li>Provide services to other organizations;</li><li>Participate in other internships or programs; or</li>
+    <li>Pursue other professional activities.</li>
+  </ul>
+  <p>Nothing in this Agreement creates an exclusive relationship between the Participant and nxT.</p>
+  <p>The Participant remains responsible for avoiding actual conflicts of interest and for protecting nxT confidential information.</p>
+
+  <h2>8. Compensation</h2>
+  <p>The Participant will receive compensation as follows:</p>
+  <p>Compensation Structure: ${fill(F.compStructure,260)}<br>
+     Rate/Amount: ${fill(F.compRate,260)}<br>
+     Payment Frequency: ${fill(F.compFrequency,260)}</p>
+  <p>Payment is compensation for services and/or agreed project work performed under this Agreement.</p>
+  <p>Unless otherwise required by law, nxT will not provide employee payroll withholding for a Participant properly classified as an independent contractor.</p>
+  <p>The Participant is responsible for applicable federal, state, and local tax obligations associated with compensation received under this Agreement.</p>
+  <p>When required by applicable tax law, nxT will report payments using the appropriate tax information return, including Form 1099-NEC when applicable.</p>
+  <p>The Participant will provide nxT with a completed Form W-9 and any other information reasonably necessary for tax reporting.</p>
+
+  <h2>9. No Employee Benefits</h2>
+  <p>To the extent permitted by applicable law and consistent with the Participant’s proper classification, the Participant is not eligible for employee benefits provided by nxT, including health insurance, retirement benefits, paid vacation, paid sick leave, unemployment benefits, or other employee benefit programs solely by reason of this Agreement.</p>
+  <p>Nothing in this provision waives any right that cannot legally be waived.</p>
+
+  <h2>10. Equipment and Technology</h2>
+  <p>Unless otherwise agreed, the Participant may use their own computer, internet connection, workspace, software, and other ordinary tools necessary to perform the work.</p>
+  <p>nxT may provide access to specialized software, systems, development environments, data, applications, devices, credentials, or other resources when necessary for a particular project.</p>
+  <p>Providing access to nxT systems or specialized resources does not by itself establish control over the Participant’s working methods.</p>
+
+  <h2>11. Confidentiality and Data Protection</h2>
+  <p>The Participant may receive access to confidential, proprietary, technical, operational, strategic, or business information belonging to nxT or its partners.</p>
+  <p>The Participant agrees to:</p>
+  <ol>
+    <li>Maintain such information in confidence;</li>
+    <li>Use it only for authorized nxT activities;</li>
+    <li>Not disclose confidential information to unauthorized individuals or organizations;</li>
+    <li>Follow applicable nxT information-security requirements;</li>
+    <li>Immediately report suspected unauthorized access, disclosure, loss, or security incidents; and</li>
+    <li>Return or permanently delete confidential information when requested or upon termination of the engagement.</li>
+  </ol>
+  <p>Where projects involve healthcare information, the Participant shall not access, download, store, transmit, or disclose protected health information (“PHI”) or other regulated information unless specifically authorized and appropriately trained to do so.</p>
+
+  <h2>12. Intellectual Property</h2>
+  <p>Unless otherwise agreed in writing, work product specifically created by the Participant for nxT as part of a compensated assignment—including software, documentation, designs, research materials, workflows, presentations, specifications, reports, and other deliverables—will be considered work commissioned for nxT to the fullest extent permitted by law.</p>
+  <p>To the extent such work does not legally qualify as a work made for hire, the Participant assigns to nxT all transferable rights, title, and interest in that work product upon payment for the applicable services.</p>
+  <p>The Participant retains ownership of intellectual property created independently before this engagement (“Background IP”).</p>
+  <p>The Participant will identify significant Background IP incorporated into a deliverable and grants nxT the rights reasonably necessary to use that Background IP as part of the applicable deliverable.</p>
+
+  <h2>13. Educational and Professional Development</h2>
+  <p>Although the Participant is independently responsible for completing assigned work, nxT may provide access to:</p>
+  <ul>
+    <li>Mentoring;</li><li>Educational sessions;</li><li>Professional-development opportunities;</li>
+    <li>Innovation activities;</li><li>Industry exposure;</li><li>Technology demonstrations;</li>
+    <li>Networking opportunities; and</li><li>Feedback concerning completed projects.</li>
+  </ul>
+  <p>Such opportunities are intended to enhance the Participant’s professional development and do not, by themselves, establish an employer-employee relationship.</p>
+
+  <h2>14. No Guarantee of Future Employment</h2>
+  <p>Participation in the program does not guarantee or imply an offer of future employment.</p>
+  <p>nxT may independently consider Participants for future internships, fellowships, employment, consulting relationships, or other opportunities.</p>
+  <p>Any subsequent relationship will require a separate agreement or employment arrangement.</p>
+
+  <h2>15. Term</h2>
+  <p>The engagement will begin on:<br>Start Date: ${fill(fmtD(F.startDate),220)}</p>
+  <p>and is expected to end on:<br>End Date: ${fill(fmtD(F.endDate),220)}</p>
+  <p>The parties may extend the engagement by mutual written agreement.</p>
+
+  <h2>16. Termination</h2>
+  <p>Either party may terminate this Agreement upon seven (7) days’ written notice, unless the parties agree otherwise.</p>
+  <p>nxT may terminate the Agreement immediately for material breach, confidentiality or security violations, misconduct, fraud, unauthorized access to information or systems, violation of applicable law, or other circumstances reasonably requiring immediate termination.</p>
+  <p>The Participant will be compensated for properly completed authorized services through the effective termination date.</p>
+
+  <h2>17. No Authority to Bind nxT</h2>
+  <p>The Participant does not have authority to enter into contracts, incur obligations, make representations, or otherwise bind nxT unless specifically authorized in writing.</p>
+
+  <h2>18. Compliance With Law</h2>
+  <p>Both parties intend to comply with applicable federal, state, and local laws.</p>
+  <p>Nothing in this Agreement is intended to improperly classify an individual who would legally qualify as an employee.</p>
+  <p>If applicable law or a governmental determination requires the relationship to be treated differently, nxT may modify the arrangement and associated compensation and tax reporting prospectively as necessary to maintain compliance.</p>
+
+  <h2>19. Entire Agreement</h2>
+  <p>This Agreement, together with any confidentiality, intellectual-property, security, project, or other written addenda incorporated into it, constitutes the agreement between the parties concerning the subject matter addressed herein.</p>
+  <p>Any amendment should be made in writing and agreed to by both parties.</p>
+
+  <h2>20. Governing Law</h2>
+  <p>This Agreement will be governed by the laws of the State of ${fill(F.governingState,200)}, without regard to conflict-of-law principles, except where federal law controls.</p>
+
+  <h2>ACCEPTANCE</h2>
+  <p>By signing below, the parties acknowledge that they have reviewed and accepted the terms of this Agreement.</p>
+  <div class="sig-grid">
+    <div class="sig-block">
+      <h3>nxT Innovation Lab</h3>
+      <p style="margin-bottom:2px">Authorized Representative: ${fill(N.name,180)}</p>
+      <p style="margin-bottom:2px">Title: ${fill(N.title,200)}</p>
+      ${sigLine(N.signature)}
+      <div class="sig-cap">Signature${N.signedAt?` · signed electronically`:''}</div>
+      <p>Date: ${fill(fmtDate(N.signedAt),160)}</p>
+    </div>
+    <div class="sig-block">
+      <h3>Participant</h3>
+      <p style="margin-bottom:2px">Full Legal Name: ${fill(P.fullName,180)}</p>
+      <p style="margin-bottom:2px">Address: ${fill(P.address,220)}</p>
+      <p style="margin-bottom:2px">Email: ${fill(P.email,200)}</p>
+      ${sigLine(P.signature)}
+      <div class="sig-cap">Signature${P.signedAt?` · signed electronically`:''}</div>
+      <p>Date: ${fill(fmtDate(P.signedAt),160)}</p>
+    </div>
+  </div>
+  ${d.status==='completed' ? `<div class="exec-stamp">FULLY EXECUTED · ${fmtDate(d.completedAt)} · Agreement ID ${esc((d.id||'').slice(0,8).toUpperCase())} · Signed electronically by both parties</div>` : ''}
+  `;
+}
+
+/* ---------- rendering ---------- */
+function renderStatus(d){
+  const a = $('#statusArea');
+  if(d.status==='completed'){
+    a.innerHTML = `<div class="banner done">✓ Fully executed on ${fmtDate(d.completedAt)}. Both parties can download the PDF.</div>`;
+  } else {
+    a.innerHTML = `<div class="banner pending">⏳ Awaiting the participant's signature. nxT signed on ${fmtDate(d.nxt?.signedAt)}.</div>`;
+  }
+}
+function renderAgreement(d){
+  AG = d;
+  $('#doc').innerHTML = docHtml(d);
+  $('#doc').classList.remove('hidden');
+  renderStatus(d);
+  $('#printBtn').classList.remove('hidden');
+  const done = d.status==='completed';
+  $('#dl').classList.toggle('hidden', !done);
+  $('#signCard').classList.toggle('hidden', done || !!d.participant?.signedAt);
+  if(token){
+    $('#backAdmin').classList.remove('hidden');
+    $('#shareCard').classList.toggle('hidden', done);
+    $('#shareLink').value = location.origin + '/agreement?id=' + d.id;
+    $('#signCard').classList.add('hidden'); // the participant signs from their own link
+  }
+}
+
+/* ---------- PDF ---------- */
+$('#dl').onclick = ()=>{
+  const name = (AG?.participant?.fullName || AG?.fields?.participantName || 'participant').replace(/[^\w\- ]/g,'').trim().replace(/\s+/g,'-');
+  const el = $('#doc');
+  $('#dl').disabled = true; $('#dl').textContent = 'Preparing PDF…';
+  html2pdf().set({
+    margin:[14,14,16,14],
+    filename:`nxT-Internship-Agreement-${name}.pdf`,
+    image:{type:'jpeg', quality:0.96},
+    html2canvas:{scale:2, useCORS:true},
+    jsPDF:{unit:'mm', format:'letter'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(el).save().then(()=>{
+    $('#dl').disabled=false; $('#dl').textContent='Download PDF';
+  }).catch(()=>{
+    $('#dl').disabled=false; $('#dl').textContent='Download PDF';
+    toastA('PDF generation failed — use Print → Save as PDF instead');
+  });
+};
+$('#printBtn').onclick = ()=>window.print();
+
+/* ---------- boot ---------- */
+async function boot(){
+  if(AG_ID){
+    try{
+      const r = await fetch('/api/agreement?id='+encodeURIComponent(AG_ID));
+      if(!r.ok) throw new Error((await r.json()).error||'Not found');
+      renderAgreement(await r.json());
+      initParticipantSign();
+    }catch(e){
+      $('#gate').classList.remove('hidden');
+      $('#gate h2').textContent = 'Agreement not found';
+      $('#gate .sub').textContent = 'This link doesn\'t match any agreement. Double-check the link with your nxT coordinator.';
+    }
+    return;
+  }
+  if(token){ initCreate(); $('#create').classList.remove('hidden'); $('#backAdmin').classList.remove('hidden'); }
+  else $('#gate').classList.remove('hidden');
+}
+
+/* ---------- admin create ---------- */
+function initCreate(){
+  const pad = makePad($('#pad-nxt'));
+  $('#clear-nxt').onclick = ()=>pad.clear();
+  const fieldIds = ['participantName','effectiveDate','compStructure','compRate','compFrequency','startDate','endDate','governingState'];
+  const liveDoc = ()=>{
+    const F = {}; fieldIds.forEach(k=>F[k]=$('#f-'+k).value||null);
+    $('#doc').innerHTML = docHtml({fields:F, nxt:{name:$('#f-repName').value||null, title:$('#f-repTitle').value||null}, participant:{}, status:'draft'});
+    $('#doc').classList.remove('hidden');
+  };
+  [...fieldIds,'repName','repTitle'].forEach(k=>$('#f-'+k).addEventListener('input', liveDoc));
+  liveDoc();
+  $('#createBtn').onclick = async ()=>{
+    const err = $('#create-err'); err.style.display='none';
+    const need = (id,msg)=>{ if(!$('#f-'+id).value.trim()){ err.textContent=msg; err.style.display='block'; return true; } return false; };
+    if(need('participantName','Add the participant\'s name.')) return;
+    if(need('repName','Add the authorized representative\'s name.')) return;
+    if(pad.isEmpty()){ err.textContent='Draw the nxT signature before creating.'; err.style.display='block'; return; }
+    if(!$('#consent-nxt').checked){ err.textContent='Please confirm the e-signature consent.'; err.style.display='block'; return; }
+    const F = {}; fieldIds.forEach(k=>F[k]=$('#f-'+k).value||null);
+    $('#createBtn').disabled = true; $('#createBtn').textContent='Creating…';
+    try{
+      const r = await fetch('/api/agreement',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({action:'create', fields:F, nxt:{name:$('#f-repName').value, title:$('#f-repTitle').value||null, signature:pad.data()}})});
+      const j = await r.json();
+      if(!r.ok) throw new Error(j.error||'Create failed');
+      history.replaceState(null,'','/agreement?id='+j.id);
+      $('#create').classList.add('hidden');
+      const rr = await fetch('/api/agreement?id='+j.id);
+      renderAgreement(await rr.json());
+      toastA('Agreement created and signed — send the link to the participant');
+    }catch(e){
+      err.textContent = e.message; err.style.display='block';
+      $('#createBtn').disabled=false; $('#createBtn').textContent='Create & sign as nxT →';
+    }
+  };
+}
+
+/* ---------- participant sign ---------- */
+function initParticipantSign(){
+  if($('#signCard').classList.contains('hidden')) return;
+  const pad = makePad($('#pad-p'));
+  $('#clear-p').onclick = ()=>pad.clear();
+  if(AG?.fields?.participantName) $('#p-fullName').value = AG.fields.participantName;
+  $('#signBtn').onclick = async ()=>{
+    const err = $('#sign-err'); err.style.display='none';
+    if(!$('#p-fullName').value.trim()){ err.textContent='Your full legal name is required.'; err.style.display='block'; return; }
+    if(pad.isEmpty()){ err.textContent='Please draw your signature.'; err.style.display='block'; return; }
+    if(!$('#consent-p').checked){ err.textContent='Please confirm you accept the terms and the e-signature consent.'; err.style.display='block'; return; }
+    $('#signBtn').disabled = true; $('#signBtn').textContent='Signing…';
+    try{
+      const r = await fetch('/api/agreement',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'sign_participant', id:AG.id, participant:{
+          fullName:$('#p-fullName').value.trim(), address:$('#p-address').value.trim()||null, email:$('#p-email').value.trim()||null, signature:pad.data()
+        }})});
+      const j = await r.json();
+      if(!r.ok) throw new Error(j.error||'Signing failed');
+      renderAgreement(j.agreement);
+      toastA('Signed! The agreement is fully executed — download your PDF.');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }catch(e){
+      err.textContent = e.message; err.style.display='block';
+      $('#signBtn').disabled=false; $('#signBtn').textContent='Sign agreement ✍';
+    }
+  };
+}
+
+$('#copyLink').onclick = ()=>navigator.clipboard.writeText($('#shareLink').value).then(()=>toastA('Link copied'));
+boot();
+</script>
+</body>
+</html>
