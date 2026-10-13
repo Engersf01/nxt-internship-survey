@@ -229,8 +229,36 @@ tr.rrow:hover td{background:#f8fafc}
       </table></div>
       <div class="empty hidden" id="aempty">No agreements yet — create one and send the private link to the participant.</div>
     </div>
+
+    <div class="card">
+      <h2>Direct deposit <span class="sub" id="bcount" style="font-weight:400"></span></h2>
+      <p class="sub" style="margin-bottom:10px">Create a private link so a participant can enter their own bank details. Numbers are encrypted at rest and revealed only here, and every reveal is logged.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="b-name" placeholder="Participant name" style="flex:1;min-width:200px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:10px 13px;font-family:inherit;font-size:.9rem">
+        <button class="btn btn-primary" id="b-create">Create link</button>
+      </div>
+      <div class="linkbox hidden" id="b-linkbox" style="display:flex;gap:8px;margin-top:10px"><input id="b-link" readonly style="flex:1;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:9px 12px;font-size:.82rem"><button class="btn" id="b-copy">Copy</button></div>
+      <div style="overflow-x:auto;margin-top:14px"><table>
+        <thead><tr><th>Created</th><th>Participant</th><th>Status</th><th>Bank</th><th></th></tr></thead>
+        <tbody id="b-rows"></tbody>
+      </table></div>
+      <div class="empty hidden" id="b-empty">No direct-deposit requests yet.</div>
+      <div class="card hidden" id="b-reveal" style="background:#fffbeb;border-color:#fde68a">
+        <h2 style="font-size:1rem">Payment details — <span id="r-name"></span></h2>
+        <p class="sub">Confidential. Closes automatically in 2 minutes.</p>
+        <dl class="dl2" id="r-body" style="margin-top:10px"></dl>
+        <div style="margin-top:12px"><button class="btn" id="r-close">Close</button></div>
+      </div>
+    </div>
   </div>
 </div>
+<style>
+.dl2{display:grid;grid-template-columns:160px 1fr;gap:6px 14px;font-size:.88rem}
+.dl2 dt{color:var(--muted);font-weight:600}
+.dl2 dd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.pill.ok{background:#ecfdf5;color:#059669}
+.btn.sm{padding:5px 10px;font-size:.75rem}
+</style>
 
 <div id="toastA"></div>
 
@@ -333,8 +361,64 @@ async function load(){
     renderLeader();
     await loadCodes();
     await loadAgreements();
+    await loadBank();
   }catch(ex){ toastA(ex.message); }
 }
+async function loadBank(){
+  try{
+    const j = await api('/api/bank?list=1');
+    const rs = j.requests||[];
+    $('#bcount').textContent = '— '+rs.filter(r=>r.status==='submitted').length+' of '+rs.length+' submitted';
+    $('#b-empty').classList.toggle('hidden', rs.length>0);
+    $('#b-rows').innerHTML = rs.map(r=>`<tr>
+      <td>${new Date(r.createdAt).toLocaleDateString(undefined,{dateStyle:'medium'})}</td>
+      <td>${esc(r.participantName)}</td>
+      <td>${r.status==='submitted'
+        ? '<span class="pill ok">✓ Submitted '+new Date(r.submittedAt).toLocaleDateString(undefined,{dateStyle:'medium'})+'</span>'
+        : '<span class="pill">Awaiting participant</span>'}</td>
+      <td>${r.bankName ? esc(r.bankName)+' · '+esc(r.accountType)+' ••'+esc(r.last4) : '—'}</td>
+      <td style="white-space:nowrap">
+        ${r.status==='submitted' ? `<button class="btn sm" data-reveal="${esc(r.id)}" data-name="${esc(r.participantName)}">Reveal</button>` : ''}
+        <button class="btn sm" data-copy="${esc(r.id)}">Copy link</button>
+      </td></tr>`).join('');
+    document.querySelectorAll('[data-reveal]').forEach(b=>b.onclick=()=>revealBank(b.dataset.reveal, b.dataset.name));
+    document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{
+      navigator.clipboard.writeText(location.origin+'/bank?id='+b.dataset.copy).then(()=>toastA('Direct-deposit link copied'));
+    });
+  }catch(ex){ toastA(ex.message); }
+}
+let revealTimer;
+async function revealBank(id, name){
+  if(!confirm(`Reveal ${name}'s bank details? This access is logged.`)) return;
+  try{
+    const j = await api('/api/bank?id='+encodeURIComponent(id)+'&reveal=1');
+    $('#r-name').textContent = name;
+    $('#r-body').innerHTML = [
+      ['Account holder', j.accountHolder], ['Bank', j.bankName], ['Account type', j.accountType],
+      ['Routing number', j.routing], ['Account number', j.account],
+      ['Submitted', j.submittedAt ? new Date(j.submittedAt).toLocaleString() : '']
+    ].map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+    $('#b-reveal').classList.remove('hidden');
+    $('#b-reveal').scrollIntoView({behavior:'smooth', block:'center'});
+    clearTimeout(revealTimer);
+    revealTimer = setTimeout(hideReveal, 120000);
+  }catch(ex){ toastA(ex.message); }
+}
+function hideReveal(){ $('#b-reveal').classList.add('hidden'); $('#r-body').innerHTML=''; }
+$('#r-close').onclick = hideReveal;
+$('#b-create').onclick = async ()=>{
+  const name = $('#b-name').value.trim();
+  if(!name) return toastA('Enter the participant name first');
+  try{
+    const j = await api('/api/bank',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create', participantName:name})});
+    $('#b-link').value = location.origin+'/bank?id='+j.id;
+    $('#b-linkbox').classList.remove('hidden');
+    $('#b-name').value = '';
+    toastA('Private link created');
+    loadBank();
+  }catch(ex){ toastA(ex.message); }
+};
+$('#b-copy').onclick = ()=>navigator.clipboard.writeText($('#b-link').value).then(()=>toastA('Link copied'));
 async function loadAgreements(){
   try{
     const j = await api('/api/agreement?list=1');

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Direct Deposit · nxT Innovation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8fafc;--card:#fff;--br:#e2e8f0;--txt:#0f172a;--muted:#64748b;
+  --accent:#0284c7;--accent-soft:#e0f2fe;--green:#059669;--green-soft:#ecfdf5;--red:#dc2626;
+  --grad:linear-gradient(90deg,#0ea5e9,#8b5cf6,#ec4899);
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;min-height:100vh}
+h1,h2{font-family:'Space Grotesk',sans-serif}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--br)}
+.top-inner{max-width:640px;margin:0 auto;padding:12px 18px}
+.top h1{font-size:1.02rem}
+.top h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px 80px}
+.card{background:var(--card);border:1px solid var(--br);border-radius:16px;padding:24px;margin:16px 0;box-shadow:var(--shadow)}
+.card h2{font-size:1.2rem;margin-bottom:6px}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+label{display:block;font-size:.8rem;font-weight:600;margin:16px 0 5px}
+label .opt{font-weight:400;color:var(--muted)}
+input[type=text],input[type=password]{width:100%;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:11px 13px;font-size:.95rem;font-family:inherit;outline:none}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(2,132,199,.12);background:#fff}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.radios{display:flex;gap:10px}
+.radio{flex:1;display:flex;align-items:center;gap:8px;border:1px solid #cbd5e1;border-radius:10px;padding:11px 13px;margin:0;font-weight:500;cursor:pointer;background:#fff}
+.radio:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:#075985}
+.radio input{accent-color:#0284c7}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--muted);font-weight:400;margin:20px 0 4px;cursor:pointer}
+.consent input{width:18px;height:18px;margin-top:2px;accent-color:#0284c7;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:13px 22px;font-family:'Space Grotesk';font-weight:700;font-size:.98rem;cursor:pointer;background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(139,92,246,.3);margin-top:20px;width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.err{display:none;color:var(--red);font-size:.85rem;margin-top:12px}
+.lock{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:.84rem;color:#075985;margin:14px 0 0}
+.done{background:var(--green-soft);border:1px solid #a7f3d0;border-radius:14px;padding:16px 18px;color:#065f46;font-size:.92rem;margin-top:12px}
+.hidden{display:none!important}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(150%);background:#0f172a;color:#fff;border-radius:12px;padding:10px 18px;font-size:.85rem;transition:transform .35s;z-index:50}
+#toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="top-inner"><h1>nxT <span>Direct Deposit</span></h1></div></div>
+
+<div class="wrap">
+  <div id="gate" class="card hidden">
+    <h2 id="gate-title">Link needed</h2>
+    <p class="sub" id="gate-sub">Open the private direct-deposit link your nxT coordinator sent you.</p>
+  </div>
+
+  <div id="form" class="card hidden">
+    <h2>Where should your pay go?</h2>
+    <p class="sub" id="greet">Enter your own US bank account details for direct deposit.</p>
+    <div class="lock">🔒 Your numbers are encrypted before they're stored, seen only by nxT payroll, and this form works once.</div>
+
+    <label>Name on the account</label>
+    <input type="text" id="holder" autocomplete="name">
+
+    <label>Bank name</label>
+    <input type="text" id="bank" placeholder="e.g. Chase, Bank of America, Wells Fargo" autocomplete="off">
+
+    <label>Account type</label>
+    <div class="radios">
+      <label class="radio"><input type="radio" name="acct" value="checking"> Checking</label>
+      <label class="radio"><input type="radio" name="acct" value="savings"> Savings</label>
+    </div>
+
+    <label>Routing number <span class="opt">· 9 digits, on a check or in your bank app</span></label>
+    <input type="text" id="routing" class="mono" inputmode="numeric" maxlength="9" autocomplete="off" placeholder="000000000">
+
+    <label>Account number</label>
+    <input type="password" id="account" class="mono" inputmode="numeric" maxlength="17" autocomplete="off">
+
+    <label>Re-enter account number</label>
+    <input type="text" id="account2" class="mono" inputmode="numeric" maxlength="17" autocomplete="off">
+
+    <label class="consent"><input type="checkbox" id="consent">
+      <span>I authorize nxT Innovation Lab to deposit my pay by ACH credit into the account above, and to correct any erroneous entries. The account is in my name and is a US account. I can request a new link to change these details.</span>
+    </label>
+
+    <button class="btn" id="submit">Submit securely</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="received" class="card hidden">
+    <h2>✓ Received</h2>
+    <div class="done" id="received-text"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const $ = (s)=>document.querySelector(s);
+const ID = new URLSearchParams(location.search).get('id');
+const esc = (s)=>String(s??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const fmt = (iso)=> iso ? new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}) : '';
+
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function show(which){
+  ['gate','form','received'].forEach(x=>$('#'+x).classList.toggle('hidden', x!==which));
+}
+// ABA routing checksum — catches typos before they reach payroll
+function validRouting(r){
+  if(!/^\d{9}$/.test(r)) return false;
+  const d = r.split('').map(Number);
+  return (3*(d[0]+d[3]+d[6]) + 7*(d[1]+d[4]+d[7]) + (d[2]+d[5]+d[8])) % 10 === 0;
+}
+function showReceived(d){
+  $('#received-text').textContent =
+    `Received on ${fmt(d.submittedAt)}: ${d.bankName}, ${d.accountType} account ending in ${d.last4}. nxT payroll will use these details for your direct deposits. To change them, ask your nxT coordinator for a new link.`;
+  show('received');
+}
+
+async function init(){
+  if(!ID){
+    $('#gate-title').textContent = 'Link needed';
+    $('#gate-sub').textContent = 'Open the private direct-deposit link your nxT coordinator sent you.';
+    return show('gate');
+  }
+  try{
+    const r = await fetch('/api/bank?id='+encodeURIComponent(ID));
+    if(!r.ok) throw new Error();
+    const d = await r.json();
+    if(d.status==='submitted') return showReceived(d);
+    $('#greet').textContent = `Hi ${(d.participantName||'there').split(' ')[0]} — enter your own US bank account details for direct deposit.`;
+    show('form');
+  }catch(e){
+    $('#gate-title').textContent = 'Link not found';
+    $('#gate-sub').textContent = 'This link doesn\'t match a direct-deposit request. Check it with your nxT coordinator.';
+    show('gate');
+  }
+}
+
+$('#submit').onclick = async ()=>{
+  const err = $('#err'); err.style.display='none';
+  const fail = (m)=>{ err.textContent=m; err.style.display='block'; };
+  const holder = $('#holder').value.trim();
+  const bank = $('#bank').value.trim();
+  const type = document.querySelector('input[name=acct]:checked')?.value;
+  const routing = $('#routing').value.replace(/\D/g,'');
+  const account = $('#account').value.replace(/\D/g,'');
+  const account2 = $('#account2').value.replace(/\D/g,'');
+  if(!holder) return fail('Enter the name on the account.');
+  if(!bank) return fail('Enter your bank name.');
+  if(!type) return fail('Choose checking or savings.');
+  if(!validRouting(routing)) return fail('That routing number doesn\'t check out — it should be 9 digits from your check or bank app.');
+  if(!/^\d{4,17}$/.test(account)) return fail('Account number must be 4 to 17 digits.');
+  if(account!==account2) return fail('The two account numbers don\'t match.');
+  if(!$('#consent').checked) return fail('Please confirm the direct-deposit authorization.');
+
+  const btn = $('#submit'); btn.disabled = true; btn.textContent = 'Encrypting & submitting…';
+  try{
+    const r = await fetch('/api/bank',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'submit', id:ID, details:{accountHolder:holder, bankName:bank, accountType:type, routing, account}})});
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error || 'Submission failed');
+    ['#account','#account2','#routing'].forEach(s=>$(s).value='');
+    showReceived(j);
+    toast('Received — thank you');
+  }catch(e){
+    fail(e.message);
+    btn.disabled = false; btn.textContent = 'Submit securely';
+  }
+};
+
+init();
+</script>
+</body>
+</html>
